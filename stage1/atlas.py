@@ -674,6 +674,11 @@ class Atlas:
         if "randomiz" in q_lower or "randomis" in q_lower:
             return self._handle_randomized(question)
 
+        # 10. Patient / Subject Information Inquiry
+        subj_in_q = self._extract_usubjid(question.text)
+        if subj_in_q and any(w in q_lower for w in ("info", "information", "about", "patient", "subject", "profile", "data", "show", "tell", "summary", "record")):
+            return self._handle_subject_summary(question, subj_in_q)
+
         # Generic / Fallback Handler
         return self._handle_generic(question)
 
@@ -1079,6 +1084,54 @@ class Atlas:
             evidence=evidence_refs,
             confidence=1.0,
             steps_used=3,
+            tokens_used=0
+        )
+
+    def _handle_subject_summary(self, question: Question, usubjid: str) -> Answer:
+        pdata = self.graph.patient360(usubjid)
+        if not pdata or "error" in pdata or not pdata.get("demographics"):
+            return Answer(
+                question_id=question.question_id,
+                answer=[],
+                text=f"Subject {usubjid} was not found in the study knowledge graph.",
+                evidence=[],
+                confidence=0.9,
+                steps_used=2,
+                tokens_used=0
+            )
+
+        dem = pdata.get("demographics", {})
+        site = pdata.get("siteid", "-")
+        arm = dem.get("ARM", "-")
+        age = dem.get("AGE", "-")
+        sex = dem.get("SEX", "-")
+        hba1c = dem.get("SCR_HBA1C", "-")
+        
+        evidence_refs = [RecordRef(domain="DM", usubjid=usubjid, seq=1)]
+        for ae in pdata.get("adverse_events", [])[:2]:
+            evidence_refs.append(RecordRef(domain="AE", usubjid=usubjid, seq=ae["seq"]))
+        for lb in pdata.get("laboratory", [])[:3]:
+            evidence_refs.append(RecordRef(domain="LB", usubjid=usubjid, seq=lb["seq"]))
+            
+        is_hys = pdata.get("signals", {}).get("hys_law", False)
+        dose_errs = len(pdata.get("signals", {}).get("dosing_errors", []))
+        prob_meds = len(pdata.get("signals", {}).get("prohibited_meds", []))
+        saes = len(pdata.get("signals", {}).get("sae", []))
+
+        text_lines = [
+            f"Here is the available study information for {usubjid}:",
+            f"• Demographics: Site {site} | Randomized Arm: {arm} | Age: {age} | Sex: {sex} | Baseline HbA1c: {hba1c}%",
+            f"• Records in StudyGraph: {len(pdata.get('laboratory', []))} laboratory tests, {len(pdata.get('adverse_events', []))} adverse events, {len(pdata.get('concomitant_medications', []))} concomitant medications.",
+            f"• Safety Signals: Hy's Law: {'CRITICAL ALERT' if is_hys else 'Normal'} | Dosing: {'Errors detected' if dose_errs > 0 else 'Adherent (0 errors)'} | Prohibited Meds: {prob_meds} | SAEs: {saes}"
+        ]
+
+        return Answer(
+            question_id=question.question_id,
+            answer=[usubjid],
+            text="\n".join(text_lines),
+            evidence=evidence_refs,
+            confidence=1.0,
+            steps_used=4,
             tokens_used=0
         )
 
