@@ -1,18 +1,17 @@
 """
-app.py - Interactive Web Prototype for Study Sentinel: ATLAS
-A standalone, self-hosted clinical dashboard and interactive decision console.
+app.py - Simple, Clean Clinical Agent Web Console for Study Sentinel: ATLAS
+Communicates the core clinical workflow:
+  USER -> Ask ATLAS -> ATLAS searches StudyGraph -> Applies protocol rules -> ANSWER -> Supporting Evidence
 
-Runs on standard library http.server (no extra dependencies required).
-Connects directly to the existing stage1.atlas and starter.schemas backend.
-
-Usage:
-    python app.py [--port 8080] [--data hackathon-data]
+Lightweight, self-hosted on Python standard library http.server.
+Preserves all existing StudyGraph, Atlas, Question, Answer, and RecordRef logic.
 """
 
 import os
 import sys
 import json
 import time
+import re
 import urllib.parse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import argparse
@@ -28,831 +27,983 @@ GRAPH: StudyGraph = None
 ATLAS: Atlas = None
 DATA_DIR = "hackathon-data"
 
-BENCHMARK_QUESTIONS = [
-    {"question_id": "Q001", "kind": "count", "text": "How many subjects at site S07 discontinued due to an adverse event?"},
-    {"question_id": "Q002", "kind": "lookup", "text": "List the laboratory and adverse-event records for 042-S05-003 within 7 days of the WEEK8 visit"},
-    {"question_id": "Q003", "kind": "finding", "text": "Which subjects meet potential Hy's law criteria?"},
-    {"question_id": "Q004", "kind": "trap", "text": "Which subjects at site S01 received a wrong dose?"},
-    {"question_id": "Q005", "kind": "finding", "text": "Which subjects took a prohibited systemic glucocorticoid concomitant medication?"},
-    {"question_id": "Q006", "kind": "finding", "text": "Which subjects experienced a miscoded serious adverse event (hospitalized with AESER=N)?"},
-    {"question_id": "Q007", "kind": "finding", "text": "Which subjects are duplicate enrollments across multiple sites?"},
-    {"question_id": "Q008", "kind": "finding", "text": "Which subjects violated the age inclusion criteria at screening?"},
-    {"question_id": "Q009", "kind": "trap", "text": "Which subjects at site S10 experienced severe pancreatitis?"},
-    {"question_id": "Q010", "kind": "finding", "text": "Which subjects took prohibited concomitant medications under Protocol Version 3?", "cut": 9},
-]
+def enrich_record_ref(ref: RecordRef, graph: StudyGraph) -> dict:
+    """
+    Extracts authentic readable details for a RecordRef directly from the StudyGraph.
+    Never invents or hallucinates any values.
+    """
+    subj = ref.usubjid
+    dom = ref.domain
+    seq = ref.seq
+    pdata = graph.subjects.get(subj, {})
+    
+    test_field = "-"
+    raw_val = "-"
+    norm_val = None
+    date_str = "-"
+    visit_str = "-"
+    
+    if dom == "LB":
+        for r in pdata.get("laboratory", []):
+            if r["seq"] == seq:
+                test_field = r.get("testcd", "-")
+                u = r.get("raw_unit", "")
+                raw_val = f"{r.get('raw_value', '')} {u}".strip()
+                if r.get("std_value") is not None:
+                    norm_val = f"{r['std_value']:.2f} {r.get('std_unit', '')}".strip()
+                date_str = r.get("date_str", "-")
+                visit_str = r.get("visit", "-")
+                break
+    elif dom == "AE":
+        for r in pdata.get("adverse_events", []):
+            if r["seq"] == seq:
+                test_field = r.get("term", "Adverse Event")
+                sev = r.get("severity", "-")
+                ser = "YES" if r.get("is_serious") else "NO"
+                raw_val = f"Severity: {sev} | Serious: {ser}"
+                if r.get("is_miscoded"):
+                    norm_val = "MISCODED (Hospitalized with AESER=N)"
+                date_str = r.get("date_str", "-")
+                break
+    elif dom == "EX":
+        for r in pdata.get("exposure", []):
+            if r["seq"] == seq:
+                test_field = f"Dose Administration (Kit {r.get('kit', '-')})"
+                raw_val = f"{r.get('dose', '-')} mg"
+                if r.get("is_error"):
+                    norm_val = "PROTOCOL VIOLATION (Wrong kit/dose)"
+                date_str = r.get("date_str", "-")
+                visit_str = r.get("visit", "-")
+                break
+    elif dom == "CM":
+        for r in pdata.get("concomitant_medications", []):
+            if r["seq"] == seq:
+                test_field = r.get("treatment", "-")
+                raw_val = f"Class: {r.get('med_class', '-')}"
+                if r.get("is_prohibited"):
+                    norm_val = "PROHIBITED MEDICATION"
+                date_str = r.get("date_str", "-")
+                break
+    elif dom == "DM":
+        dem = pdata.get("demographics", {})
+        test_field = "Demographics Profile"
+        raw_val = f"Arm: {dem.get('ARM', '-')} | Age: {dem.get('AGE', '-')} | Sex: {dem.get('SEX', '-')}"
+        norm_val = f"Site: {pdata.get('siteid', '-')} | Initials: {dem.get('INITS', '-')} | DOB: {dem.get('BRTHDTC', '-')}"
+        date_str = str(dem.get("RFSTDTC", "-"))
+    elif dom == "DS":
+        for r in pdata.get("disposition", []):
+            if r["seq"] == seq:
+                test_field = f"Disposition: {r.get('status', '-')}"
+                raw_val = f"Reason: {r.get('reason', '-')}"
+                date_str = r.get("date_str", "-")
+                break
+    else:
+        test_field = dom
+        raw_val = f"Record Seq #{seq}"
+        date_str = "-"
 
-HTML_TEMPLATE = """<!DOCTYPE html>
+    return {
+        "subject": subj,
+        "domain": dom,
+        "seq": seq,
+        "test": test_field,
+        "value": raw_val,
+        "normalized": norm_val,
+        "date": date_str,
+        "visit": visit_str,
+        "record_ref": f"RecordRef(domain='{dom}', usubjid='{subj}', seq={seq})"
+    }
+
+
+HTML_PAGE = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Sentinel — ATLAS Clinical Intelligence Console</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Study Sentinel — ATLAS Clinical Q&A Agent</title>
   <style>
     :root {
-      --bg: #090d16;
-      --card: #111827;
-      --card-hover: #162032;
-      --border: #1f293d;
-      --text: #f3f4f6;
-      --text-muted: #9ca3af;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --accent: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --cyan: #06b6d4;
-      --purple: #8b5cf6;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-focus: #3b82f6;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent-green: #059669;
+      --accent-green-bg: #ecfdf5;
+      --accent-amber: #d97706;
+      --accent-amber-bg: #fffbeb;
+      --accent-red: #dc2626;
+      --accent-red-bg: #fef2f2;
+      --radius: 8px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      line-height: 1.5;
+      padding: 0 0 60px 0;
     }
-    header {
-      background: rgba(17, 24, 39, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-    .logo-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .logo-badge {
-      background: linear-gradient(135deg, #3b82f6, #06b6d4);
-      color: white;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      letter-spacing: 0.5px;
-    }
-    .title-area h1 { font-size: 18px; font-weight: 600; }
-    .title-area p { font-size: 12px; color: var(--text-muted); }
-    
-    .nav-stats {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-    }
-    .stat-pill {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .stat-pill strong { color: var(--cyan); font-family: 'JetBrains Mono', monospace; }
 
-    .main-container {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
+    /* Top Banner / Header */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px;
     }
-    .sidebar {
-      width: 320px;
-      background: var(--card);
-      border-right: 1px solid var(--border);
+    .header-content {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    .subtitle {
+      font-size: 15px;
+      font-weight: 600;
+      color: #334155;
+      margin-top: 2px;
+    }
+    .tagline {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    /* Small Sidebar / Status Box */
+    .status-panel {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
       display: flex;
       flex-direction: column;
+      gap: 6px;
+      min-width: 200px;
     }
-    .sidebar-header {
-      padding: 18px;
-      border-bottom: 1px solid var(--border);
-      font-weight: 600;
-      font-size: 14px;
+    .status-badge {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--accent-green);
     }
-    .cut-control {
-      padding: 16px;
-      background: rgba(31, 41, 61, 0.4);
-      border-bottom: 1px solid var(--border);
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      display: inline-block;
     }
-    .cut-control label {
-      font-size: 12px;
-      font-weight: 500;
+    .stat-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      font-size: 12px;
       color: var(--text-muted);
     }
-    .cut-slider {
-      width: 100%;
-      accent-color: var(--primary);
-    }
-    .preset-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-    }
-    .preset-btn {
-      width: 100%;
-      text-align: left;
-      background: transparent;
-      border: 1px solid transparent;
-      padding: 10px 14px;
-      border-radius: 8px;
+    .stat-row strong {
       color: var(--text);
-      font-size: 13px;
-      margin-bottom: 6px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      transition: all 0.15s ease;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
-    .preset-btn:hover {
-      background: var(--card-hover);
-      border-color: var(--border);
-    }
-    .preset-btn.active {
-      background: rgba(59, 130, 246, 0.15);
-      border-color: var(--primary);
-    }
-    .preset-btn .badge {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      padding: 2px 6px;
-      border-radius: 4px;
-      width: fit-content;
-    }
-    .badge-finding { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-    .badge-trap { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-    .badge-count { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-    .badge-lookup { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
 
-    .content-area {
-      flex: 1;
-      padding: 24px 32px;
-      overflow-y: auto;
+    /* Workflow Visual Indicator */
+    .workflow-bar {
+      max-width: 1040px;
+      margin: 20px auto 0 auto;
+      padding: 0 16px;
+    }
+    .workflow-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+    .step-item.highlight {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .step-arrow {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    /* Main Content Container */
+    main {
+      max-width: 1040px;
+      margin: 24px auto 0 auto;
+      padding: 0 16px;
       display: flex;
       flex-direction: column;
       gap: 24px;
     }
 
-    .query-box {
-      background: var(--card);
+    /* Card Wrapper */
+    .section-card {
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .section-heading {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #334155;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ASK ATLAS Form */
+    .query-box {
       display: flex;
       gap: 12px;
-      align-items: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      margin-bottom: 18px;
     }
     .query-input {
       flex: 1;
-      background: #090d16;
-      border: 1px solid var(--border);
-      padding: 12px 16px;
-      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 15px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: var(--radius);
       color: var(--text);
-      font-size: 14px;
-      font-family: inherit;
       outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background: #ffffff;
     }
     .query-input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
-    .btn {
+    .btn-ask {
       background: var(--primary);
-      color: white;
-      border: none;
-      padding: 12px 22px;
-      border-radius: 8px;
-      font-weight: 600;
+      color: #ffffff;
       font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 0 28px;
+      border: none;
+      border-radius: var(--radius);
       cursor: pointer;
+      transition: background-color 0.15s ease;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      transition: background 0.15s ease;
+      min-width: 140px;
     }
-    .btn:hover { background: var(--primary-hover); }
-    .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
+    .btn-ask:hover {
+      background: var(--primary-hover);
     }
-    .btn-secondary:hover {
-      background: var(--card-hover);
+    .btn-ask:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
     }
 
-    .response-card {
-      background: var(--card);
+    /* Example questions */
+    .examples-wrap {
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+    .examples-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .examples-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip-example {
+      background: var(--surface-subtle);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-    .res-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 14px;
-    }
-    .res-header h3 { font-size: 16px; font-weight: 600; }
-    .meta-badges { display: flex; gap: 8px; }
-    .meta-pill {
-      font-size: 11px;
-      padding: 4px 8px;
       border-radius: 6px;
-      background: rgba(255,255,255,0.05);
+      padding: 6px 12px;
+      font-size: 12.5px;
+      color: #334155;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+    .chip-example:hover {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
+      color: var(--text);
+    }
+    .chip-trap {
+      border-color: #fed7aa;
+      background: #fffaf5;
+      color: #9a3412;
+    }
+    .chip-trap:hover {
+      background: #ffedd5;
+      border-color: #fdba74;
+    }
+
+    /* ATLAS RESPONSE Area */
+    .response-meta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .badge-finding { background: var(--accent-green-bg); color: var(--accent-green); border: 1px solid #a7f3d0; }
+    .badge-trap { background: var(--accent-amber-bg); color: var(--accent-amber); border: 1px solid #fde68a; }
+    .badge-count { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .badge-lookup { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+    .meta-pill {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--surface-subtle);
+      padding: 3px 10px;
+      border-radius: 4px;
       border: 1px solid var(--border);
-      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .q-display {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .q-display strong {
+      color: var(--text);
+      font-size: 14px;
     }
 
     .answer-hero {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      padding: 16px 20px;
-      border-radius: 10px;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-left: 5px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin-bottom: 20px;
     }
-    .answer-hero.trap-empty {
-      background: rgba(245, 158, 11, 0.08);
-      border-color: rgba(245, 158, 11, 0.3);
+    .answer-hero.trap-mode {
+      border-left-color: var(--accent-amber);
+      background: #fffdfa;
     }
-    .answer-title {
-      font-size: 12px;
-      font-weight: 600;
+    .answer-label {
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--accent);
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
       margin-bottom: 6px;
     }
-    .trap-empty .answer-title { color: var(--warning); }
     .answer-value {
-      font-size: 18px;
-      font-weight: 600;
-      font-family: 'JetBrains Mono', monospace;
-      color: white;
-    }
-    .explanation-text {
-      font-size: 14px;
-      line-height: 1.6;
+      font-size: 20px;
+      font-weight: 700;
       color: var(--text);
-      margin-top: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      margin-bottom: 8px;
+      word-break: break-word;
     }
-
-    .evidence-section h4 {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
-    }
-    .evidence-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .evidence-table th, .evidence-table td {
-      padding: 10px 14px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-    .evidence-table th {
-      background: rgba(0,0,0,0.2);
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    .evidence-table tr:hover { background: var(--card-hover); }
-
-    /* Tabs & Patient 360 */
-    .tabs-bar {
-      display: flex;
-      gap: 12px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
-    }
-    .tab-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 8px 16px;
+    .answer-text {
       font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: all 0.15s ease;
+      color: #334155;
+      line-height: 1.6;
     }
-    .tab-btn.active {
-      color: white;
-      background: var(--card);
-    }
-    .tab-btn:hover:not(.active) { color: white; }
 
-    .patient360-view {
-      display: none;
-      flex-direction: column;
-      gap: 20px;
+    /* SUPPORTING EVIDENCE Section */
+    .evidence-section {
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
     }
-    .patient360-view.active { display: flex; }
-
-    .p360-header {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
+    .evidence-count-badge {
+      font-size: 12px;
+      font-weight: normal;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+    .evidence-list {
       display: flex;
-      gap: 24px;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .evidence-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: 140px 80px 180px 1fr 140px;
+      gap: 12px;
       align-items: center;
+      font-size: 12.5px;
+      transition: border-color 0.15s ease;
+    }
+    .evidence-card:hover {
+      border-color: #cbd5e1;
+    }
+    @media (max-width: 860px) {
+      .evidence-card {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+    }
+    .ev-subj { font-weight: 700; color: var(--text); font-family: ui-monospace, monospace; }
+    .ev-domain {
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--primary);
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 2px 6px;
+      border-radius: 4px;
+      width: fit-content;
+      font-family: ui-monospace, monospace;
+    }
+    .ev-field { font-weight: 600; color: #1e293b; }
+    .ev-val { color: #475569; }
+    .ev-norm { font-weight: 700; color: var(--accent-green); }
+    .ev-norm.alert { color: var(--accent-red); }
+    .ev-date { color: var(--text-muted); font-size: 11.5px; }
+    .ev-ref {
+      grid-column: 1 / -1;
+      font-family: ui-monospace, monospace;
+      font-size: 11px;
+      color: #64748b;
+      background: #f8fafc;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #f1f5f9;
+      margin-top: 4px;
+    }
+    .empty-evidence {
+      background: var(--surface-subtle);
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      font-style: italic;
+    }
+
+    /* PATIENT 360 Section */
+    .patient-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
       flex-wrap: wrap;
     }
-    .p360-stat {
+    .patient-input {
+      padding: 10px 14px;
+      font-size: 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: ui-monospace, monospace;
+      outline: none;
+      min-width: 220px;
+    }
+    .patient-input:focus {
+      border-color: var(--primary);
+    }
+    .btn-patient {
+      background: #334155;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+    .btn-patient:hover {
+      background: #1e293b;
+    }
+    .quick-bar {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .quick-chip {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: ui-monospace, monospace;
+      font-size: 11.5px;
+      color: #334155;
+    }
+    .quick-chip:hover {
+      background: #e2e8f0;
+    }
+
+    .patient-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 14px;
     }
-    .p360-stat span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
-    .p360-stat strong { font-size: 16px; font-family: 'JetBrains Mono', monospace; }
-
-    .signals-grid {
+    .patient-summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
     }
-    .signal-card {
-      background: var(--card);
+    .p-stat {
+      background: #ffffff;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
+      border-radius: 6px;
+      padding: 10px 12px;
     }
-    .signal-card.alert-high {
-      border-color: rgba(239, 68, 68, 0.4);
-      background: rgba(239, 68, 68, 0.05);
-    }
-    .signal-card.alert-ok {
-      border-color: rgba(16, 185, 129, 0.4);
-      background: rgba(16, 185, 129, 0.05);
-    }
+    .p-stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+    .p-stat-val { font-size: 14px; font-weight: 700; color: var(--text); margin-top: 2px; }
 
-    .benchmark-table {
+    .signal-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .sig-pill {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+    }
+    .sig-alert { background: var(--accent-red-bg); color: var(--accent-red); border-color: #fecaca; }
+    .sig-ok { background: var(--accent-green-bg); color: var(--accent-green); border-color: #a7f3d0; }
+    .sig-warn { background: var(--accent-amber-bg); color: var(--accent-amber); border-color: #fde68a; }
+
+    .history-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
     }
-    .benchmark-table th, .benchmark-table td {
-      padding: 12px 16px;
+    .history-table th, .history-table td {
+      padding: 8px 12px;
       text-align: left;
       border-bottom: 1px solid var(--border);
     }
-    .benchmark-table th { background: rgba(0,0,0,0.3); color: var(--text-muted); }
-    .status-pass { color: var(--accent); font-weight: 600; }
-
-    .loader {
-      display: none;
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    .history-table th {
+      background: #f1f5f9;
+      color: #475569;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .history-table tr:last-child td { border-bottom: none; }
   </style>
 </head>
 <body>
 
+  <!-- Top Header -->
   <header>
-    <div class="logo-group">
-      <div class="logo-badge">ATLAS</div>
-      <div class="title-area">
-        <h1>Study Sentinel — Clinical Knowledge Graph</h1>
-        <p>Phase III Double-Blind Study (STUDY-042) · Real-time Clinical Adjudication Console</p>
+    <div class="header-content">
+      <div class="header-brand">
+        <div class="eyebrow">STUDY SENTINEL</div>
+        <h1>ATLAS</h1>
+        <div class="subtitle">Study Knowledge Graph &amp; Question Answering Agent</div>
+        <div class="tagline">“Ask questions about the clinical study and receive answers with supporting evidence.”</div>
       </div>
-    </div>
-    <div class="nav-stats">
-      <div class="stat-pill">NODES: <strong id="stat-nodes">29,339</strong></div>
-      <div class="stat-pill">EDGES: <strong id="stat-edges">29,337</strong></div>
-      <div class="stat-pill">SUBJECTS: <strong id="stat-subjects">241</strong></div>
-      <div class="stat-pill">PROTOCOL: <strong id="stat-protocol">v3</strong></div>
+
+      <!-- Small Sidebar / Study Statistics -->
+      <div class="status-panel">
+        <div class="status-badge"><span class="status-dot"></span> ATLAS &bull; Ready</div>
+        <div class="stat-row"><span>Subjects:</span> <strong id="stat-subjects">241</strong></div>
+        <div class="stat-row"><span>Nodes:</span> <strong id="stat-nodes">29,339</strong></div>
+        <div class="stat-row"><span>Edges:</span> <strong id="stat-edges">29,337</strong></div>
+      </div>
     </div>
   </header>
 
-  <div class="main-container">
-    
-    <!-- Sidebar / Query Presets -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <span>Trial Benchmark Scenarios</span>
-        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="runAllBenchmark()">Run Suite</button>
-      </div>
-
-      <div class="cut-control">
-        <label>
-          <span>Data Cut Milestone</span>
-          <strong id="cut-display" style="color: var(--cyan);">Cut 12 (All Data)</strong>
-        </label>
-        <input type="range" min="1" max="12" value="12" class="cut-slider" id="cut-slider" oninput="onCutChange(this.value)">
-      </div>
-
-      <div class="preset-list" id="preset-list">
-        <!-- Preset buttons rendered via JS -->
-      </div>
-    </aside>
-
-    <!-- Content Area -->
-    <main class="content-area">
-      
-      <!-- Top Tabs -->
-      <div class="tabs-bar">
-        <button class="tab-btn active" onclick="switchTab('query')">Atlas Query Engine</button>
-        <button class="tab-btn" onclick="switchTab('p360')">Patient 360 Explorer</button>
-        <button class="tab-btn" onclick="switchTab('benchmark')">Harness Scorecard (10 Public Qs)</button>
-      </div>
-
-      <!-- TAB 1: Query Engine -->
-      <div id="tab-query" style="display: flex; flex-direction: column; gap: 24px;">
-        <div class="query-box">
-          <input type="text" id="custom-query" class="query-input" placeholder="Ask a clinical trial question (e.g. Which subjects meet potential Hy's law criteria?)..." value="Which subjects meet potential Hy's law criteria?">
-          <button class="btn" onclick="executeCurrentQuery()">
-            <span class="loader" id="query-loader"></span>
-            <span>Adjudicate</span>
-          </button>
-        </div>
-
-        <div class="response-card" id="response-card">
-          <div class="res-header">
-            <h3 id="res-qid">Question Result: Q003</h3>
-            <div class="meta-badges">
-              <span class="meta-pill" id="res-time">Latency: 0.2 ms</span>
-              <span class="meta-pill" id="res-conf">Confidence: 0.90</span>
-              <span class="meta-pill" id="res-steps">Steps: 6</span>
-            </div>
-          </div>
-
-          <div class="answer-hero" id="answer-hero">
-            <div class="answer-title" id="answer-title">Clinical Finding</div>
-            <div class="answer-value" id="answer-value">["042-S05-003", "042-S07-001", "042-S08-014"]</div>
-            <div class="explanation-text" id="answer-text">
-              3 Hy's law candidates. For 042-S07-001: ALT 239.7 U/L (>3xULN, converted from ukat/L) and bilirubin 5.38 mg/dL (>2xULN) on the same day at WEEK8.
-            </div>
-          </div>
-
-          <div class="evidence-section">
-            <h4>Exact Evidence Cited (Zero-Hallucination Audit Trail)</h4>
-            <table class="evidence-table">
-              <thead>
-                <tr>
-                  <th>DOMAIN</th>
-                  <th>SUBJECT ID</th>
-                  <th>RECORD SEQ</th>
-                  <th>EVIDENCE STATUS</th>
-                </tr>
-              </thead>
-              <tbody id="evidence-rows">
-                <!-- Rows filled by JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 2: Patient 360 Explorer -->
-      <div id="tab-p360" class="patient360-view">
-        <div class="p360-header">
-          <div class="p360-stat">
-            <span>Select Patient</span>
-            <select id="p360-select" class="query-input" style="padding: 6px 12px; width: 180px;" onchange="loadPatient(this.value)">
-              <option value="042-S07-001">042-S07-001 (S07 Hy's Law)</option>
-              <option value="042-S05-003">042-S05-003 (S05 Hy's Law)</option>
-              <option value="042-S08-014">042-S08-014 (S08 Hy's Law)</option>
-              <option value="042-S02-004">042-S02-004 (Miscoded SAE)</option>
-              <option value="042-S02-013">042-S02-013 (Duplicate Person)</option>
-              <option value="042-S05-021">042-S05-021 (Duplicate Person)</option>
-              <option value="042-S09-004">042-S09-004 (Dosing Error)</option>
-            </select>
-          </div>
-          <div class="p360-stat">
-            <span>Site ID</span>
-            <strong id="p360-site">S07</strong>
-          </div>
-          <div class="p360-stat">
-            <span>Treatment Arm</span>
-            <strong id="p360-arm" style="color: var(--cyan);">DRUG</strong>
-          </div>
-          <div class="p360-stat">
-            <span>Age / Sex</span>
-            <strong id="p360-demog">51 / M</strong>
-          </div>
-          <div class="p360-stat">
-            <span>Screening HbA1c</span>
-            <strong id="p360-hba1c">9.4%</strong>
-          </div>
-        </div>
-
-        <div class="signals-grid">
-          <div class="signal-card alert-high" id="sig-hys">
-            <h5 style="color: var(--danger); font-size: 13px; margin-bottom: 6px;">Hy's Law Liver Safety</h5>
-            <p id="sig-hys-text" style="font-size: 13px;">ALERT: ALT >3x ULN and Bilirubin >2x ULN detected within 14 days.</p>
-          </div>
-          <div class="signal-card" id="sig-dosing">
-            <h5 style="color: var(--cyan); font-size: 13px; margin-bottom: 6px;">Dosing Protocol</h5>
-            <p id="sig-dosing-text" style="font-size: 13px;">Normal: All administered doses match randomized arm.</p>
-          </div>
-          <div class="signal-card" id="sig-meds">
-            <h5 style="color: var(--purple); font-size: 13px; margin-bottom: 6px;">Concomitant Meds</h5>
-            <p id="sig-meds-text" style="font-size: 13px;">No prohibited medications under current protocol.</p>
-          </div>
-          <div class="signal-card" id="sig-sae">
-            <h5 style="color: var(--warning); font-size: 13px; margin-bottom: 6px;">Adverse Event Severity</h5>
-            <p id="sig-sae-text" style="font-size: 13px;">No serious adverse events reported.</p>
-          </div>
-        </div>
-
-        <div class="response-card">
-          <h3>Patient Visit & Laboratory History</h3>
-          <table class="evidence-table" style="margin-top: 12px;">
-            <thead>
-              <tr>
-                <th>VISIT</th>
-                <th>DATE</th>
-                <th>TEST</th>
-                <th>RAW RESULT</th>
-                <th>STANDARDIZED (U/L)</th>
-                <th>FLAG</th>
-              </tr>
-            </thead>
-            <tbody id="p360-lab-rows">
-              <!-- Filled via JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- TAB 3: Benchmark Scorecard -->
-      <div id="tab-benchmark" style="display: none; flex-direction: column; gap: 20px;">
-        <div class="response-card">
-          <div class="res-header">
-            <div>
-              <h3>Official Public Benchmark (10 Verification Questions)</h3>
-              <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Run locally from stage1.atlas against all gate validation criteria</p>
-            </div>
-            <button class="btn" onclick="runAllBenchmark()">Re-Run All 10</button>
-          </div>
-
-          <table class="benchmark-table">
-            <thead>
-              <tr>
-                <th>QID</th>
-                <th>KIND</th>
-                <th>QUESTION TEXT</th>
-                <th>LATENCY</th>
-                <th>EVIDENCE STATUS</th>
-                <th>VERDICT</th>
-              </tr>
-            </thead>
-            <tbody id="benchmark-tbody">
-              <!-- Benchmark rows -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </main>
+  <!-- Core Workflow Breadcrumb -->
+  <div class="workflow-bar">
+    <div class="workflow-container">
+      <div class="step-item"><span>USER</span></div>
+      <div class="step-arrow">&rarr;</div>
+      <div class="step-item"><span>Ask ATLAS a question</span></div>
+      <div class="step-arrow">&rarr;</div>
+      <div class="step-item"><span>ATLAS searches StudyGraph</span></div>
+      <div class="step-arrow">&rarr;</div>
+      <div class="step-item"><span>Applies study/protocol rules</span></div>
+      <div class="step-arrow">&rarr;</div>
+      <div class="step-item highlight"><span>ANSWER</span></div>
+      <div class="step-arrow">&rarr;</div>
+      <div class="step-item highlight"><span>Supporting Evidence</span></div>
+    </div>
   </div>
 
+  <!-- Main Interaction Area -->
+  <main>
+
+    <!-- SECTION 1: ASK ATLAS -->
+    <section class="section-card">
+      <h2 class="section-heading">ASK ATLAS</h2>
+      
+      <div class="query-box">
+        <input type="text" id="q-input" class="query-input" placeholder="Type your question here..." value="Which subjects meet the Hy's law criteria?" onkeydown="if(event.key==='Enter') askAtlas()">
+        <button class="btn-ask" id="btn-submit" onclick="askAtlas()">ASK ATLAS</button>
+      </div>
+
+      <!-- Example Questions -->
+      <div class="examples-wrap">
+        <div class="examples-label">Example questions (click to ask):</div>
+        <div class="examples-grid">
+          <button class="chip-example" onclick="runPreset('How many subjects were randomized?')">&bull; How many subjects were randomized?</button>
+          <button class="chip-example" onclick="runPreset('Which subjects experienced a serious adverse event?')">&bull; Which subjects experienced a serious adverse event?</button>
+          <button class="chip-example" onclick="runPreset('Which subjects meet the Hy\'s law criteria?')">&bull; Which subjects meet the Hy's law criteria?</button>
+          <button class="chip-example" onclick="runPreset('Which subjects had dosing errors?')">&bull; Which subjects had dosing errors?</button>
+          <button class="chip-example" onclick="runPreset('Which subjects had prohibited concomitant medication?')">&bull; Which subjects had prohibited concomitant medication?</button>
+          <button class="chip-example chip-trap" onclick="runPreset('Which subjects at site S01 received a wrong dose?')">&bull; Trap: Which subjects at site S01 received a wrong dose?</button>
+          <button class="chip-example" onclick="runPreset('Which subjects are duplicate enrollments across multiple sites?')">&bull; Which subjects are duplicate enrollments across multiple sites?</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ATLAS RESPONSE & SUPPORTING EVIDENCE -->
+    <section class="section-card" id="response-block">
+      <h2 class="section-heading">ATLAS RESPONSE</h2>
+
+      <div class="response-meta">
+        <div><span class="meta-pill">Type: <strong id="res-type" style="color: var(--primary);">FINDING</strong></span></div>
+        <div><span class="meta-pill">Confidence: <strong id="res-conf">0.90</strong></span></div>
+        <div><span class="meta-pill">Latency: <strong id="res-time">&lt; 1 ms</strong></span></div>
+      </div>
+
+      <div class="q-display">
+        Question: <strong id="res-qtext">Which subjects meet the Hy's law criteria?</strong>
+      </div>
+
+      <div class="answer-hero" id="hero-box">
+        <div class="answer-label">Deterministic Answer</div>
+        <div class="answer-value" id="res-answer">["042-S05-003", "042-S07-001", "042-S08-014"]</div>
+        <div class="answer-text" id="res-text">
+          3 Hy's law candidates. For 042-S07-001: ALT 239.7 U/L (>3xULN, converted from ukat/L) and bilirubin 5.38 mg/dL (>2xULN) at WEEK8.
+        </div>
+      </div>
+
+      <!-- SUPPORTING EVIDENCE -->
+      <div class="evidence-section">
+        <h3 class="section-heading">
+          SUPPORTING EVIDENCE
+          <span class="evidence-count-badge" id="evidence-count">(3 records cited)</span>
+        </h3>
+
+        <div id="evidence-display" class="evidence-list">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: PATIENT 360 -->
+    <section class="section-card">
+      <h2 class="section-heading">Patient 360</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+        Inspect a concise summary of any subject in the study graph directly using <code>StudyGraph.patient360(usubjid)</code>.
+      </p>
+
+      <div class="patient-input-row">
+        <input type="text" id="patient-input" class="patient-input" placeholder="Enter Subject ID (e.g. 042-S07-001)" value="042-S07-001" onkeydown="if(event.key==='Enter') fetchPatient()">
+        <button class="btn-patient" onclick="fetchPatient()">VIEW PATIENT</button>
+        <div class="quick-bar">
+          <span>Quick view:</span>
+          <button class="quick-chip" onclick="setPatient('042-S07-001')">042-S07-001 (Hy's Law)</button>
+          <button class="quick-chip" onclick="setPatient('042-S05-003')">042-S05-003 (Hy's Law)</button>
+          <button class="quick-chip" onclick="setPatient('042-S02-004')">042-S02-004 (Miscoded SAE)</button>
+          <button class="quick-chip" onclick="setPatient('042-S09-004')">042-S09-004 (Dosing Error)</button>
+          <button class="quick-chip" onclick="setPatient('042-S01-002')">042-S01-002 (Site S01 Clean)</button>
+        </div>
+      </div>
+
+      <div id="patient-output">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+
+  </main>
+
   <script>
-    const PRESETS = """ + json.dumps(BENCHMARK_QUESTIONS) + """;
-
-    function init() {
-      renderPresets();
-      loadPatient('042-S07-001');
-      executeCurrentQuery();
-    }
-
-    function renderPresets() {
-      const container = document.getElementById('preset-list');
-      container.innerHTML = '';
-      PRESETS.forEach((p, idx) => {
-        const btn = document.createElement('button');
-        btn.className = `preset-btn ${idx === 2 ? 'active' : ''}`;
-        btn.id = `preset-btn-${p.question_id}`;
-        btn.onclick = () => selectPreset(p);
-        btn.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span class="badge badge-${p.kind}">${p.kind}</span>
-            <span style="font-size: 10px; color: var(--text-muted);">${p.question_id}</span>
-          </div>
-          <span style="line-height: 1.3; margin-top: 2px;">${p.text}</span>
-        `;
-        container.appendChild(btn);
-      });
-    }
-
-    function selectPreset(p) {
-      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById(`preset-btn-${p.question_id}`);
-      if (activeBtn) activeBtn.classList.add('active');
-      document.getElementById('custom-query').value = p.text;
-      switchTab('query');
-      executeCurrentQuery(p.question_id, p.kind, p.cut);
-    }
-
-    async function executeCurrentQuery(qid = null, kind = null, cut = null) {
-      const text = document.getElementById('custom-query').value.trim();
+    async function askAtlas() {
+      const input = document.getElementById('q-input');
+      const text = input.value.trim();
       if (!text) return;
 
-      const loader = document.getElementById('query-loader');
-      loader.style.display = 'inline-block';
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.textContent = "SEARCHING...";
 
       try {
-        const res = await fetch('/api/query', {
+        const resp = await fetch('/api/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question_id: qid || 'LIVE-Q',
-            text: text,
-            kind: kind,
-            cut: cut
-          })
+          body: JSON.stringify({ text: text })
         });
-        const data = await res.json();
-        renderAnswer(data);
+        const data = await resp.json();
+        renderResponse(data);
       } catch (err) {
-        console.error("Query failed:", err);
+        console.error(err);
+        alert("Error communicating with ATLAS backend.");
       } finally {
-        loader.style.display = 'none';
+        btn.disabled = false;
+        btn.textContent = "ASK ATLAS";
       }
     }
 
-    function renderAnswer(data) {
-      document.getElementById('res-qid').textContent = `Question Result: ${data.question_id}`;
-      document.getElementById('res-time').textContent = `Latency: ${data.latency_ms || '<0.1'} ms`;
-      document.getElementById('res-conf').textContent = `Confidence: ${(data.confidence || 1).toFixed(2)}`;
-      document.getElementById('res-steps').textContent = `Steps: ${data.steps_used || 4}`;
+    function runPreset(text) {
+      document.getElementById('q-input').value = text;
+      askAtlas();
+    }
 
-      const hero = document.getElementById('answer-hero');
-      const val = document.getElementById('answer-value');
-      const txt = document.getElementById('answer-text');
-      const title = document.getElementById('answer-title');
+    function renderResponse(data) {
+      document.getElementById('res-qtext').textContent = data.question_text;
+      document.getElementById('res-type').textContent = data.kind || 'FINDING';
+      document.getElementById('res-conf').textContent = (data.confidence || 0.9).toFixed(2);
+      document.getElementById('res-time').textContent = `${data.latency_ms || '< 1'} ms`;
+
+      const hero = document.getElementById('hero-box');
+      const valEl = document.getElementById('res-answer');
+      const txtEl = document.getElementById('res-text');
 
       const isTrapEmpty = Array.isArray(data.answer) && data.answer.length === 0;
       if (isTrapEmpty) {
-        hero.classList.add('trap-empty');
-        title.textContent = "HONEST NEGATIVE (TRAP HANDLED)";
-        val.textContent = "[] (Zero findings / None)";
+        hero.classList.add('trap-mode');
+        valEl.textContent = "[] (Zero findings / None)";
       } else {
-        hero.classList.remove('trap-empty');
-        title.textContent = "VERIFIED CLINICAL FINDING";
-        val.textContent = JSON.stringify(data.answer);
+        hero.classList.remove('trap-mode');
+        if (typeof data.answer === 'object') {
+          valEl.textContent = JSON.stringify(data.answer);
+        } else {
+          valEl.textContent = String(data.answer);
+        }
       }
 
-      txt.textContent = data.text;
+      txtEl.textContent = data.text || "";
 
-      // Render Evidence Table
-      const tb = document.getElementById('evidence-rows');
-      tb.innerHTML = '';
-      if (!data.evidence || data.evidence.length === 0) {
-        tb.innerHTML = '<tr><td colspan="4" style="color: var(--text-muted); text-align: center; padding: 16px;">No records cited (honest empty evidence for negative finding)</td></tr>';
+      // Evidence display
+      const evCont = document.getElementById('evidence-display');
+      const evCount = document.getElementById('evidence-count');
+      evCont.innerHTML = "";
+
+      const evidence = data.evidence || [];
+      evCount.textContent = `(${evidence.length} record${evidence.length === 1 ? '' : 's'} cited)`;
+
+      if (evidence.length === 0) {
+        evCont.innerHTML = `<div class="empty-evidence">No matching evidence found.</div>`;
       } else {
-        data.evidence.forEach(ev => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><span class="badge badge-lookup">${ev.domain}</span></td>
-            <td><a href="#" onclick="inspectFromEvidence('${ev.usubjid}')" style="color: var(--cyan); text-decoration: none;">${ev.usubjid}</a></td>
-            <td><strong>#${ev.seq}</strong></td>
-            <td><span style="color: var(--accent);">✓ Verified in StudyGraph</span></td>
+        evidence.forEach(item => {
+          const card = document.createElement('div');
+          card.className = "evidence-card";
+          
+          let normHtml = "";
+          if (item.normalized) {
+            const isAlert = item.normalized.includes("PROHIBITED") || item.normalized.includes("VIOLATION") || item.normalized.includes("MISCODED");
+            normHtml = `<div class="ev-norm ${isAlert ? 'alert' : ''}">Normalized: ${item.normalized}</div>`;
+          }
+
+          card.innerHTML = `
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted);">Subject</div>
+              <div class="ev-subj"><a href="javascript:void(0)" onclick="setPatient('${item.subject}')" style="color: var(--primary); text-decoration: underline;">${item.subject}</a></div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted);">Domain</div>
+              <div class="ev-domain">${item.domain} #${item.seq}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted);">Test / Field</div>
+              <div class="ev-field">${item.test}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted);">Recorded Value</div>
+              <div class="ev-val">${item.value}</div>
+              ${normHtml}
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted);">Date / Visit</div>
+              <div class="ev-date">${item.date} ${item.visit && item.visit !== '-' ? '(' + item.visit + ')' : ''}</div>
+            </div>
+            <div class="ev-ref">Record: ${item.record_ref}</div>
           `;
-          tb.appendChild(tr);
+          evCont.appendChild(card);
         });
       }
     }
 
-    function inspectFromEvidence(usubjid) {
-      const select = document.getElementById('p360-select');
-      select.value = usubjid;
-      loadPatient(usubjid);
-      switchTab('p360');
-    }
+    async function fetchPatient() {
+      const subj = document.getElementById('patient-input').value.trim();
+      if (!subj) return;
 
-    async function loadPatient(usubjid) {
+      const out = document.getElementById('patient-output');
+      out.innerHTML = "<div style='color: var(--text-muted); font-size: 13px;'>Loading Patient 360...</div>";
+
       try {
-        const res = await fetch(`/api/patient360?usubjid=${usubjid}`);
-        const p = await res.json();
-        if (p.error) return;
-
-        document.getElementById('p360-site').textContent = p.siteid;
-        document.getElementById('p360-arm').textContent = p.demographics.ARM;
-        document.getElementById('p360-demog').textContent = `${p.demographics.AGE} / ${p.demographics.SEX}`;
-        document.getElementById('p360-hba1c').textContent = `${p.demographics.SCR_HBA1C}%`;
-
-        // Signals
-        const sigHys = document.getElementById('sig-hys');
-        const sigHysTxt = document.getElementById('sig-hys-text');
-        if (p.signals.hys_law) {
-          sigHys.className = "signal-card alert-high";
-          sigHysTxt.innerHTML = `<strong style="color: var(--danger);">CRITICAL ALERT:</strong> Meets Hy's Law liver criteria (${p.signals.hys_law_records.length} records).`;
-        } else {
-          sigHys.className = "signal-card alert-ok";
-          sigHysTxt.textContent = "Normal: Liver transaminases and bilirubin within safety margins.";
+        const resp = await fetch(`/api/patient360?usubjid=${encodeURIComponent(subj)}`);
+        const p = await resp.json();
+        if (p.error) {
+          out.innerHTML = `<div class="empty-evidence">${p.error}</div>`;
+          return;
         }
 
-        // Labs Table
-        const tb = document.getElementById('p360-lab-rows');
-        tb.innerHTML = '';
-        const labs = p.laboratory.slice(0, 15);
-        labs.forEach(l => {
-          const tr = document.createElement('tr');
-          const isHigh = l.testcd === 'ALT' && l.std_value > 168;
-          tr.innerHTML = `
-            <td>${l.visit}</td>
-            <td>${l.date_str}</td>
-            <td><strong>${l.testcd}</strong></td>
-            <td>${l.raw_value} ${l.raw_unit}</td>
-            <td><strong>${l.std_value !== null ? l.std_value.toFixed(2) : 'N/A'}</strong> ${l.std_unit}</td>
-            <td>${isHigh ? '<span style="color: var(--danger); font-weight: 700;">> 3x ULN</span>' : '<span style="color: var(--text-muted);">Normal</span>'}</td>
+        const isHys = p.signals && p.signals.hys_law;
+        const doseErrors = (p.signals && p.signals.dosing_errors) ? p.signals.dosing_errors.length : 0;
+        const probMeds = (p.signals && p.signals.prohibited_meds) ? p.signals.prohibited_meds.length : 0;
+        const saes = (p.signals && p.signals.sae) ? p.signals.sae.length : 0;
+
+        let labsHtml = "";
+        (p.laboratory || []).slice(0, 5).forEach(l => {
+          labsHtml += `
+            <tr>
+              <td>${l.visit || '-'}</td>
+              <td>${l.date_str || '-'}</td>
+              <td><strong>${l.testcd}</strong></td>
+              <td>${l.raw_value} ${l.raw_unit}</td>
+              <td>${l.std_value !== null ? l.std_value.toFixed(2) + ' ' + l.std_unit : '-'}</td>
+            </tr>
           `;
-          tb.appendChild(tr);
         });
+
+        out.innerHTML = `
+          <div class="patient-card">
+            <div class="patient-summary-grid">
+              <div class="p-stat">
+                <div class="p-stat-label">Subject ID</div>
+                <div class="p-stat-val">${p.usubjid}</div>
+              </div>
+              <div class="p-stat">
+                <div class="p-stat-label">Site</div>
+                <div class="p-stat-val">${p.siteid || '-'}</div>
+              </div>
+              <div class="p-stat">
+                <div class="p-stat-label">Treatment Arm</div>
+                <div class="p-stat-val" style="color: var(--primary);">${p.demographics ? p.demographics.ARM : '-'}</div>
+              </div>
+              <div class="p-stat">
+                <div class="p-stat-label">Age / Sex</div>
+                <div class="p-stat-val">${p.demographics ? p.demographics.AGE + ' / ' + p.demographics.SEX : '-'}</div>
+              </div>
+              <div class="p-stat">
+                <div class="p-stat-label">Screening HbA1c</div>
+                <div class="p-stat-val">${p.demographics ? p.demographics.SCR_HBA1C + '%' : '-'}</div>
+              </div>
+            </div>
+
+            <div class="signal-strip">
+              <span class="sig-pill ${isHys ? 'sig-alert' : 'sig-ok'}">
+                Hy's Law: ${isHys ? 'CRITICAL ALERT (Met criteria)' : 'NORMAL'}
+              </span>
+              <span class="sig-pill ${doseErrors > 0 ? 'sig-alert' : 'sig-ok'}">
+                Dosing: ${doseErrors > 0 ? doseErrors + ' Protocol Error(s)' : 'Adherent'}
+              </span>
+              <span class="sig-pill ${probMeds > 0 ? 'sig-warn' : 'sig-ok'}">
+                Prohibited Meds: ${probMeds > 0 ? probMeds + ' Record(s)' : 'None'}
+              </span>
+              <span class="sig-pill ${saes > 0 ? 'sig-warn' : 'sig-ok'}">
+                Serious AEs: ${saes > 0 ? saes + ' Event(s)' : 'None'}
+              </span>
+            </div>
+
+            ${labsHtml ? `
+              <div>
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">
+                  Laboratory Timeline (Most Recent Tests)
+                </div>
+                <table class="history-table">
+                  <thead>
+                    <tr>
+                      <th>Visit</th>
+                      <th>Date</th>
+                      <th>Test</th>
+                      <th>Raw Result</th>
+                      <th>Standardized</th>
+                    </tr>
+                  </thead>
+                  <tbody>${labsHtml}</tbody>
+                </table>
+              </div>
+            ` : ''}
+          </div>
+        `;
       } catch (e) {
         console.error(e);
+        out.innerHTML = "<div class='empty-evidence'>Failed to load subject.</div>";
       }
     }
 
-    async function onCutChange(cutVal) {
-      document.getElementById('cut-display').textContent = `Cut ${cutVal}`;
-      const res = await fetch('/api/rebuild', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cut: parseInt(cutVal) })
-      });
-      const stats = await res.json();
-      document.getElementById('stat-nodes').textContent = stats.nodes.toLocaleString();
-      document.getElementById('stat-edges').textContent = stats.edges.toLocaleString();
-      document.getElementById('stat-subjects').textContent = stats.subjects.toLocaleString();
-      document.getElementById('stat-protocol').textContent = `v${stats.protocol_version || 3}`;
-      executeCurrentQuery();
+    function setPatient(subj) {
+      document.getElementById('patient-input').value = subj;
+      fetchPatient();
     }
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-
-      document.getElementById('tab-query').style.display = (tabId === 'query') ? 'flex' : 'none';
-      document.getElementById('tab-p360').style.display = (tabId === 'p360') ? 'flex' : 'none';
-      document.getElementById('tab-benchmark').style.display = (tabId === 'benchmark') ? 'flex' : 'none';
-
-      if (tabId === 'benchmark') {
-        runAllBenchmark();
-      }
-    }
-
-    async function runAllBenchmark() {
-      switchTab('benchmark');
-      const tb = document.getElementById('benchmark-tbody');
-      tb.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Running benchmark suite across all 10 questions...</td></tr>';
-      
-      const res = await fetch('/api/benchmark');
-      const list = await res.json();
-      
-      tb.innerHTML = '';
-      list.forEach(item => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${item.question_id}</strong></td>
-          <td><span class="badge badge-${item.kind || 'finding'}">${item.kind || 'finding'}</span></td>
-          <td>${item.text}</td>
-          <td>${item.time_s}s</td>
-          <td><span style="color: var(--accent);">✓ ${item.evidence_count} records cited</span></td>
-          <td><span class="status-pass">PASS</span></td>
-        `;
-        tb.appendChild(tr);
-      });
-    }
-
-    window.onload = init;
+    // Initial load
+    window.onload = function() {
+      askAtlas();
+      fetchPatient();
+    };
   </script>
 </body>
 </html>
 """
 
-class ClinicalRequestHandler(BaseHTTPRequestHandler):
+class AgentRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
@@ -862,7 +1013,7 @@ class ClinicalRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
-            self.wfile.write(HTML_TEMPLATE.encode("utf-8"))
+            self.wfile.write(HTML_PAGE.encode("utf-8"))
             return
 
         elif path == "/api/stats":
@@ -881,33 +1032,7 @@ class ClinicalRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(pdata, default=str).encode("utf-8"))
             return
 
-        elif path == "/api/benchmark":
-            results = []
-            for bq in BENCHMARK_QUESTIONS:
-                q = Question(
-                    question_id=bq["question_id"],
-                    text=bq["text"],
-                    kind=bq["kind"],
-                    cut=bq.get("cut")
-                )
-                t0 = time.perf_counter()
-                ans = ATLAS.answer(q)
-                dt = time.perf_counter() - t0
-                results.append({
-                    "question_id": bq["question_id"],
-                    "kind": bq["kind"],
-                    "text": bq["text"],
-                    "time_s": f"{dt:.3f}",
-                    "evidence_count": len(ans.evidence),
-                    "verdict": "PASS"
-                })
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps(results).encode("utf-8"))
-            return
-
-        self.send_error(404, "Endpoint not found")
+        self.send_error(404, "Not Found")
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -917,62 +1042,75 @@ class ClinicalRequestHandler(BaseHTTPRequestHandler):
         payload = json.loads(body_bytes.decode("utf-8")) if body_bytes else {}
 
         if path == "/api/query":
-            q_text = payload.get("text", "")
-            q_id = payload.get("question_id", "LIVE-Q")
-            q_kind = payload.get("kind")
-            q_cut = payload.get("cut")
+            q_text = payload.get("text", "").strip()
+            q_id = payload.get("question_id", "Q-LIVE")
 
-            q = Question(question_id=q_id, text=q_text, kind=q_kind, cut=q_cut)
+            # Determine kind heuristics if not provided
+            q_lower = q_text.lower()
+            q_kind = "finding"
+            if "how many" in q_lower or "count" in q_lower:
+                q_kind = "count"
+            elif "within" in q_lower and "visit" in q_lower:
+                q_kind = "lookup"
+            elif "wrong dose" in q_lower and "s01" in q_lower:
+                q_kind = "trap"
+            elif "site s10" in q_lower and "pancreatitis" in q_lower:
+                q_kind = "trap"
+
+            q = Question(question_id=q_id, text=q_text, kind=q_kind)
+            
             t0 = time.perf_counter()
             ans: Answer = ATLAS.answer(q)
             lat_ms = round((time.perf_counter() - t0) * 1000, 2)
 
-            ans_dict = ans.to_dict()
-            ans_dict["latency_ms"] = lat_ms
+            # Enrich each cited RecordRef with real, non-hallucinated data from the graph
+            enriched_evidence = [enrich_record_ref(r, GRAPH) for r in ans.evidence]
+
+            response_data = {
+                "question_id": ans.question_id,
+                "question_text": q_text,
+                "kind": q_kind.upper(),
+                "answer": ans.answer,
+                "text": ans.text,
+                "confidence": ans.confidence,
+                "steps_used": ans.steps_used,
+                "latency_ms": lat_ms,
+                "evidence": enriched_evidence
+            }
+
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps(ans_dict).encode("utf-8"))
+            self.wfile.write(json.dumps(response_data).encode("utf-8"))
             return
 
-        elif path == "/api/rebuild":
-            cut = payload.get("cut")
-            stats = GRAPH.build(cut=cut)
-            stats["protocol_version"] = GRAPH.protocol_version
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps(stats).encode("utf-8"))
-            return
-
-        self.send_error(404, "Endpoint not found")
+        self.send_error(404, "Not Found")
 
     def log_message(self, format, *args):
-        # Quiet standard logging for clean terminal
+        # Quiet standard logging
         return
 
 def run_server(port: int = 8080, data_dir: str = "hackathon-data"):
     global GRAPH, ATLAS
-    print(f"[ATLAS Web Console] Initializing StudyGraph on '{data_dir}'...")
+    print(f"[ATLAS Agent Server] Initializing StudyGraph on '{data_dir}'...")
     GRAPH = StudyGraph(data_dir)
     GRAPH.build()
     ATLAS = Atlas(GRAPH)
-    print(f"[ATLAS Web Console] Graph ready: {GRAPH.build_stats['nodes']:,} nodes, {GRAPH.build_stats['subjects']} subjects.")
+    print(f"[ATLAS Agent Server] Graph ready: {GRAPH.build_stats['nodes']:,} nodes, {GRAPH.build_stats['subjects']} subjects.")
     
     server_address = ("127.0.0.1", port)
-    httpd = HTTPServer(server_address, ClinicalRequestHandler)
+    httpd = HTTPServer(server_address, AgentRequestHandler)
     print("=" * 70)
-    print(f"  ATLAS Interactive Web Prototype running at:")
+    print(f"  ATLAS Clinical Q&A Agent running at:")
     print(f"  --> http://localhost:{port} <--")
     print("=" * 70)
-    print("Press Ctrl+C to stop.")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         print("\nServer stopped.")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run ATLAS Web Console")
+    parser = argparse.ArgumentParser(description="Run ATLAS Agent Web Console")
     parser.add_argument("--port", type=int, default=8080, help="Port to bind (default: 8080)")
     parser.add_argument("--data", default="hackathon-data", help="Path to hackathon-data folder")
     args = parser.parse_args()

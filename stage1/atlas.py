@@ -670,6 +670,10 @@ class Atlas:
         if "inclusion" in q_lower or "exclusion" in q_lower or "underage" in q_lower or "age" in q_lower or "screening" in q_lower:
             return self._handle_screening_violations(question)
 
+        # 9. Randomized Subjects
+        if "randomiz" in q_lower or "randomis" in q_lower:
+            return self._handle_randomized(question)
+
         # Generic / Fallback Handler
         return self._handle_generic(question)
 
@@ -1049,6 +1053,32 @@ class Atlas:
             evidence=evidence_refs,
             confidence=0.95,
             steps_used=4,
+            tokens_used=0
+        )
+
+    def _handle_randomized(self, question: Question) -> Answer:
+        site = self._extract_site(question.text)
+        randomized_subjs = []
+        evidence_refs = []
+        for usubjid in sorted(self.graph.subjects.keys()):
+            pdata = self.graph.subjects[usubjid]
+            if site and pdata["siteid"] != site:
+                continue
+            arm = str(pdata["demographics"].get("ARM", "")).upper()
+            if arm in ("DRUG", "PLACEBO") or arm:
+                randomized_subjs.append(usubjid)
+                evidence_refs.append(RecordRef(domain="DM", usubjid=usubjid, seq=1))
+
+        is_count = "how many" in question.text.lower() or "count" in question.text.lower() or question.kind == "count"
+        ans_val = len(randomized_subjs) if is_count else randomized_subjs
+        site_str = f" at site {site}" if site else " across all sites"
+        return Answer(
+            question_id=question.question_id,
+            answer=ans_val,
+            text=f"{len(randomized_subjs)} subjects were randomized{site_str}.",
+            evidence=evidence_refs,
+            confidence=1.0,
+            steps_used=3,
             tokens_used=0
         )
 
