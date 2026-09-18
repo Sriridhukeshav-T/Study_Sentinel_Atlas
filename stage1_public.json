@@ -1,0 +1,388 @@
+[
+  {
+    "question_id": "Q001",
+    "answer": 0,
+    "text": "0 subjects at site S07 discontinued due to adverse event.",
+    "evidence": [],
+    "confidence": 0.95,
+    "steps_used": 4,
+    "tokens_used": 0
+  },
+  {
+    "question_id": "Q002",
+    "answer": [
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 25
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 26
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 27
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 28
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 29
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 30
+      }
+    ],
+    "text": "Found 6 records for 042-S05-003 within 7 days of WEEK8 (2026-03-13).",
+    "evidence": [
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 25
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 26
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 27
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 28
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 29
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 30
+      }
+    ],
+    "confidence": 0.95,
+    "steps_used": 5,
+    "tokens_used": 0
+  },
+  {
+    "question_id": "Q003",
+    "answer": [
+      "042-S05-003",
+      "042-S07-001",
+      "042-S08-014"
+    ],
+    "text": "3 Hy's law candidates. For 042-S05-003: ALT 238.9 U/L (>3xULN) and bilirubin 4.66 mg/dL (>2xULN) at WEEK12. For 042-S07-001: ALT 239.7 U/L (>3xULN, converted from ukat/L) and bilirubin 5.38 mg/dL (>2xULN) at WEEK8. For 042-S08-014: ALT 238.5 U/L (>3xULN) and bilirubin 4.93 mg/dL (>2xULN) at WEEK12.",
+    "evidence": [
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 31
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 32
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S05-003",
+        "seq": 33
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S07-001",
+        "seq": 25
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S07-001",
+        "seq": 26
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S07-001",
+        "seq": 27
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S08-014",
+        "seq": 31
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S08-014",
+        "seq": 32
+      },
+      {
+        "domain": "LB",
+        "usubjid": "042-S08-014",
+        "seq": 33
+      }
+    ],
+    "confidence": 0.9,
+    "steps_used": 6,
+    "tokens_used": 0
+  },
+  {
+    "question_id": "Q004",
+    "answer": [],
+    "text": "No dosing errors at site S01. The dosing errors in this study are elsewhere.",
+    "evidence": [],
+    "confidence": 0.85,
+    "steps_used": 3,
+    "tokens_used": 0
+  },
+  {
+    "question_id": "Q005",
+    "answer": [
+      "042-S02-010",
+      "042-S08-001",
+      "042-S09-001",
+      "042-S09-005",
+      "042-S09-012",
+      "042-S09-013",
+      "042-S11-002",
+      "042-S12-002"
+    ],
+    "text": "8 subjects received prohibited concomitant medications.",
+    "evidence": [
+      {
+        "domain": "CM",
+        "usubjid": "042-S02-010",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S08-001",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S09-001",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S09-005",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S09-012",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S09-013",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S11-002",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S12-002",
+        "seq": 1
+      }
+    ],
+    "confidence": 0.95,
+    "steps_used": 5,
+    "tokens_used": 0
+  },
+  {
+    "question_id": "Q006",
+    "answer": [
+      "042-S02-004"
+    ],
+    "text": "1 subjects experienced miscoded serious adverse events (hospitalized but site marked AESER=N).",
+    "evidence": [
+      {
+        "domain": "AE",
+        "usubjid": "042-S02-004",
+        "seq": 1
+      }
+    ],
+    "confidence": 0.95,
+    "steps_used": 4,
+    "tokens_used": 0
+  },
+  {
+    "question_id": "Q007",
+    "answer": [
+      "042-S02-013",
+      "042-S05-021"
+    ],
+    "text": "2 duplicate subject identifiers enrolled for the same individuals.",
+    "evidence": [
+      {
+        "domain": "DM",
+        "usubjid": "042-S02-013",
+        "seq": 1
+      },
+      {
+        "domain": "DM",
+        "usubjid": "042-S05-021",
+        "seq": 1
+      }
+    ],
+    "confidence": 0.95,
+    "steps_used": 4,
+    "tokens_used": 0
+  },
+  {
+    "question_id": "Q008",
+    "answer": [
+      "042-S04-003",
+      "042-S04-017",
+      "042-S05-017",
+      "042-S08-020",
+      "042-S12-015"
+    ],
+    "text": "5 subjects violated screening inclusion criteria (under 18 years old).",
+    "evidence": [
+      {
+        "domain": "DM",
+        "usubjid": "042-S04-003",
+        "seq": 1
+      },
+      {
+        "domain": "DM",
+        "usubjid": "042-S04-017",
+        "seq": 1
+      },
+      {
+        "domain": "DM",
+        "usubjid": "042-S05-017",
+        "seq": 1
+      },
+      {
+        "domain": "DM",
+        "usubjid": "042-S08-020",
+        "seq": 1
+      },
+      {
+        "domain": "DM",
+        "usubjid": "042-S12-015",
+        "seq": 1
+      }
+    ],
+    "confidence": 0.95,
+    "steps_used": 4,
+    "tokens_used": 0
+  },
+  {
+    "question_id": "Q009",
+    "answer": [],
+    "text": "No matching records or findings found for this query in the study graph.",
+    "evidence": [],
+    "confidence": 0.85,
+    "steps_used": 2,
+    "tokens_used": 0
+  },
+  {
+    "question_id": "Q010",
+    "answer": [
+      "042-S02-010",
+      "042-S05-012",
+      "042-S06-006",
+      "042-S07-001",
+      "042-S08-001",
+      "042-S08-005",
+      "042-S08-014",
+      "042-S09-001",
+      "042-S09-005",
+      "042-S09-012",
+      "042-S09-013",
+      "042-S11-002",
+      "042-S12-002"
+    ],
+    "text": "13 subjects received prohibited concomitant medications.",
+    "evidence": [
+      {
+        "domain": "CM",
+        "usubjid": "042-S02-010",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S05-012",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S06-006",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S07-001",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S08-001",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S08-005",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S08-014",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S09-001",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S09-005",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S09-012",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S09-013",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S11-002",
+        "seq": 1
+      },
+      {
+        "domain": "CM",
+        "usubjid": "042-S12-002",
+        "seq": 1
+      }
+    ],
+    "confidence": 0.95,
+    "steps_used": 5,
+    "tokens_used": 0
+  }
+]
