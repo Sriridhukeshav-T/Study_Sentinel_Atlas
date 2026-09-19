@@ -1,0 +1,27 @@
+========================================================================
+  STUDY SENTINEL — MONITOR CYCLE REPORT #1
+========================================================================
+Review Cycle:     1
+Data Cut:         6
+Protocol Version: v2
+------------------------------------------------------------------------
+CYCLE SUMMARY METRICS:
+  • Findings Detected:       56
+  • Escalations Processed:   6
+  • Queries Raised:          29
+  • Compliance Deviations:   170
+------------------------------------------------------------------------
+TRACE LOG (DECISIONS AS THEY HAPPENED):
+[detect] 56 findings under protocol v2 - safety 6, data 49, site 1
+[medical_review] 6 escalation drafts; 1 liver candidate kept monitor-only (screening ALT already elevated)
+[data_manager] 29 queries raised (26 confirmed by site, 3 unanswered - site on hold); 0 duplicates
+[compliance] 170 deviations under v2: 136 visit windows, 7 prohibited medicines, 5 eligibility, 4 renal exclusion
+[human_gate] 6 escalations await the medical monitor
+[human_gate] HYS_LAW_CANDIDATE 042-S05-003 -> APPROVED: Consistent with Hy's law; report to safety and hold dosing pending review.
+[human_gate] SAE_MISCODED 042-S02-004 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.
+[human_gate] SAE_UNESCALATED 042-S12-005 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.
+[human_gate] SAE_UNESCALATED 042-S05-006 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.
+[human_gate] SAE_UNESCALATED 042-S01-007 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.
+[human_gate] DOSING_ERROR S09 -> APPROVED: Site-level deviation; issue corrective action and retrain site staff.
+[execute] cycle complete: 56 findings, 6 escalations, 29 queries, 170 deviations
+========================================================================

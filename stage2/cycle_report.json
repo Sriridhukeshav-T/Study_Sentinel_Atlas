@@ -1,0 +1,3046 @@
+{
+  "cycle": 1,
+  "cut": 6,
+  "protocol_version": 2,
+  "summary": {
+    "cycle": 1,
+    "cut": 6,
+    "protocol_version": 2,
+    "findings_total": 56,
+    "escalations_total": 6,
+    "queries_total": 29,
+    "deviations_total": 170,
+    "human_decisions_total": 6
+  },
+  "findings_count": 56,
+  "escalations_count": 6,
+  "queries_count": 29,
+  "compliance_deviations_count": 170,
+  "human_gate_decisions_count": 6,
+  "findings": [
+    {
+      "code": "HYS_LAW_CANDIDATE",
+      "usubjid": "042-S07-001",
+      "site": "S07",
+      "category": "safety",
+      "evidence": [
+        {
+          "domain": "LB",
+          "usubjid": "042-S07-001",
+          "seq": 25
+        },
+        {
+          "domain": "LB",
+          "usubjid": "042-S07-001",
+          "seq": 26
+        },
+        {
+          "domain": "LB",
+          "usubjid": "042-S07-001",
+          "seq": 27
+        }
+      ],
+      "summary": "Subject 042-S07-001 meets potential Hy's Law criteria (>3xULN transaminases and >2xULN total bilirubin)."
+    },
+    {
+      "code": "HYS_LAW_CANDIDATE",
+      "usubjid": "042-S05-003",
+      "site": "S05",
+      "category": "safety",
+      "evidence": [
+        {
+          "domain": "LB",
+          "usubjid": "042-S05-003",
+          "seq": 31
+        },
+        {
+          "domain": "LB",
+          "usubjid": "042-S05-003",
+          "seq": 32
+        },
+        {
+          "domain": "LB",
+          "usubjid": "042-S05-003",
+          "seq": 33
+        }
+      ],
+      "summary": "Subject 042-S05-003 meets potential Hy's Law criteria (>3xULN transaminases and >2xULN total bilirubin)."
+    },
+    {
+      "code": "SAE_MISCODED",
+      "usubjid": "042-S02-004",
+      "site": "S02",
+      "category": "safety",
+      "term": "Cellulitis",
+      "severity": "SEVERE",
+      "is_miscoded": true,
+      "evidence": [
+        {
+          "domain": "AE",
+          "usubjid": "042-S02-004",
+          "seq": 1
+        }
+      ],
+      "summary": "'Cellulitis' recorded with AESHOSP=Y and AESER=N. Hospitalisation makes this serious under protocol section 6; the 24-hour reporting clock applies."
+    },
+    {
+      "code": "SAE_UNESCALATED",
+      "usubjid": "042-S12-005",
+      "site": "S12",
+      "category": "safety",
+      "term": "Pneumonia",
+      "severity": "SEVERE",
+      "is_miscoded": false,
+      "evidence": [
+        {
+          "domain": "AE",
+          "usubjid": "042-S12-005",
+          "seq": 1
+        }
+      ],
+      "summary": "Serious Adverse Event 'Pneumonia' reported."
+    },
+    {
+      "code": "SAE_UNESCALATED",
+      "usubjid": "042-S05-006",
+      "site": "S05",
+      "category": "safety",
+      "term": "Myocardial infarction",
+      "severity": "SEVERE",
+      "is_miscoded": false,
+      "evidence": [
+        {
+          "domain": "AE",
+          "usubjid": "042-S05-006",
+          "seq": 1
+        }
+      ],
+      "summary": "Serious Adverse Event 'Myocardial infarction' reported."
+    },
+    {
+      "code": "SAE_UNESCALATED",
+      "usubjid": "042-S01-007",
+      "site": "S01",
+      "category": "safety",
+      "term": "Myocardial infarction",
+      "severity": "SEVERE",
+      "is_miscoded": false,
+      "evidence": [
+        {
+          "domain": "AE",
+          "usubjid": "042-S01-007",
+          "seq": 1
+        }
+      ],
+      "summary": "Serious Adverse Event 'Myocardial infarction' reported."
+    },
+    {
+      "code": "AE_BEFORE_FIRST_DOSE",
+      "usubjid": "042-S11-005",
+      "site": "S11",
+      "domain": "AE",
+      "seq": 1,
+      "category": "data",
+      "term": "Fatigue",
+      "start_date": "2026-01-08",
+      "first_dose": "2026-01-13",
+      "summary": "AE 'Fatigue' starts 2026-01-08, before first dose 2026-01-13."
+    },
+    {
+      "code": "AE_BEFORE_FIRST_DOSE",
+      "usubjid": "042-S02-010",
+      "site": "S02",
+      "domain": "AE",
+      "seq": 1,
+      "category": "data",
+      "term": "Hypoglycaemia",
+      "start_date": "2026-01-16",
+      "first_dose": "2026-01-21",
+      "summary": "AE 'Hypoglycaemia' starts 2026-01-16, before first dose 2026-01-21."
+    },
+    {
+      "code": "AE_BEFORE_FIRST_DOSE",
+      "usubjid": "042-S09-010",
+      "site": "S09",
+      "domain": "AE",
+      "seq": 1,
+      "category": "data",
+      "term": "Fatigue",
+      "start_date": "2026-01-15",
+      "first_dose": "2026-01-20",
+      "summary": "AE 'Fatigue' starts 2026-01-15, before first dose 2026-01-20."
+    },
+    {
+      "code": "AE_BEFORE_FIRST_DOSE",
+      "usubjid": "042-S11-010",
+      "site": "S11",
+      "domain": "AE",
+      "seq": 3,
+      "category": "data",
+      "term": "Headache",
+      "start_date": "2026-01-26",
+      "first_dose": "2026-01-27",
+      "summary": "AE 'Headache' starts 2026-01-26, before first dose 2026-01-27."
+    },
+    {
+      "code": "AE_BEFORE_FIRST_DOSE",
+      "usubjid": "042-S10-012",
+      "site": "S10",
+      "domain": "AE",
+      "seq": 1,
+      "category": "data",
+      "term": "Headache",
+      "start_date": "2026-01-24",
+      "first_dose": "2026-01-31",
+      "summary": "AE 'Headache' starts 2026-01-24, before first dose 2026-01-31."
+    },
+    {
+      "code": "AE_BEFORE_FIRST_DOSE",
+      "usubjid": "042-S09-013",
+      "site": "S09",
+      "domain": "AE",
+      "seq": 1,
+      "category": "data",
+      "term": "Back pain",
+      "start_date": "2026-01-10",
+      "first_dose": "2026-01-18",
+      "summary": "AE 'Back pain' starts 2026-01-10, before first dose 2026-01-18."
+    },
+    {
+      "code": "AE_BEFORE_FIRST_DOSE",
+      "usubjid": "042-S02-015",
+      "site": "S02",
+      "domain": "AE",
+      "seq": 1,
+      "category": "data",
+      "term": "Urinary tract infection",
+      "start_date": "2026-01-20",
+      "first_dose": "2026-01-22",
+      "summary": "AE 'Urinary tract infection' starts 2026-01-20, before first dose 2026-01-22."
+    },
+    {
+      "code": "AE_BEFORE_FIRST_DOSE",
+      "usubjid": "042-S03-016",
+      "site": "S03",
+      "domain": "AE",
+      "seq": 1,
+      "category": "data",
+      "term": "Hypoglycaemia",
+      "start_date": "2026-01-18",
+      "first_dose": "2026-01-21",
+      "summary": "AE 'Hypoglycaemia' starts 2026-01-18, before first dose 2026-01-21."
+    },
+    {
+      "code": "AE_BEFORE_FIRST_DOSE",
+      "usubjid": "042-S07-016",
+      "site": "S07",
+      "domain": "AE",
+      "seq": 1,
+      "category": "data",
+      "term": "Fatigue",
+      "start_date": "2026-01-24",
+      "first_dose": "2026-02-02",
+      "summary": "AE 'Fatigue' starts 2026-01-24, before first dose 2026-02-02."
+    },
+    {
+      "code": "DUPLICATE_SUBJECT",
+      "usubjid": "042-S02-013",
+      "site": "S02",
+      "domain": "DM",
+      "seq": 1,
+      "category": "data",
+      "matched_subject": "042-S05-021",
+      "summary": "Subject demographic fingerprint matches dual enrollment 042-S05-021."
+    },
+    {
+      "code": "DUPLICATE_SUBJECT",
+      "usubjid": "042-S05-021",
+      "site": "S05",
+      "domain": "DM",
+      "seq": 1,
+      "category": "data",
+      "matched_subject": "042-S02-013",
+      "summary": "Subject demographic fingerprint matches dual enrollment 042-S02-013."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-004",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 2,
+      "category": "data",
+      "summary": "Dose 20.0 mg administered does not match prescribed regimen for DRUG arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-004",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 3,
+      "category": "data",
+      "summary": "Dose 20.0 mg administered does not match prescribed regimen for DRUG arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-004",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 4,
+      "category": "data",
+      "summary": "Dose 20.0 mg administered does not match prescribed regimen for DRUG arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-005",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 2,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-005",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 3,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-005",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 4,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-006",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 2,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-006",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 3,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-006",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 4,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-009",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 2,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-009",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 3,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-009",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 4,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-011",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 2,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-011",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 3,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-011",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 4,
+      "category": "data",
+      "summary": "Dose 10.0 mg administered does not match prescribed regimen for PLACEBO arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-014",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 2,
+      "category": "data",
+      "summary": "Dose 20.0 mg administered does not match prescribed regimen for DRUG arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-014",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 3,
+      "category": "data",
+      "summary": "Dose 20.0 mg administered does not match prescribed regimen for DRUG arm."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "usubjid": "042-S09-014",
+      "site": "S09",
+      "domain": "EX",
+      "seq": 4,
+      "category": "data",
+      "summary": "Dose 20.0 mg administered does not match prescribed regimen for DRUG arm."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-001",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-002",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-003",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-004",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-005",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-006",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-007",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-008",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-009",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-010",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-011",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-012",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-013",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-014",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-015",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-016",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-017",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-018",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-019",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "UNIT_MISMATCH",
+      "usubjid": "042-S07-020",
+      "site": "S07",
+      "domain": "LB",
+      "seq": 1,
+      "category": "data",
+      "summary": "Lab result reported in local unit ukat/L rather than central standard U/L."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "site": "S09",
+      "count": 18,
+      "subjects": [
+        "042-S09-014",
+        "042-S09-006",
+        "042-S09-009",
+        "042-S09-011",
+        "042-S09-004",
+        "042-S09-005"
+      ],
+      "category": "site",
+      "summary": "Site S09 has 18 dosing error records across 6 subjects."
+    }
+  ],
+  "escalations": [
+    {
+      "code": "HYS_LAW_CANDIDATE",
+      "usubjid": "042-S05-003",
+      "site": "S05",
+      "severity": "CRITICAL",
+      "summary": "Potential Hy's law criteria met for subject 042-S05-003 at site S05 (ALT >3xULN and BILI >2xULN within 14 days). Dosing held pending review.",
+      "evidence": [
+        {
+          "domain": "LB",
+          "usubjid": "042-S05-003",
+          "seq": 31
+        },
+        {
+          "domain": "LB",
+          "usubjid": "042-S05-003",
+          "seq": 32
+        },
+        {
+          "domain": "LB",
+          "usubjid": "042-S05-003",
+          "seq": 33
+        }
+      ],
+      "alternatives": [
+        "Report to sponsor safety desk and hold dosing",
+        "Continue study drug with weekly liver panel monitoring - rejected: violates protocol section 7"
+      ]
+    },
+    {
+      "code": "SAE_MISCODED",
+      "usubjid": "042-S02-004",
+      "site": "S02",
+      "severity": "CRITICAL",
+      "summary": "'Cellulitis' recorded with AESHOSP=Y and AESER=N. Hospitalisation makes this serious under protocol section 6; the 24-hour reporting clock applies.",
+      "evidence": [
+        {
+          "domain": "AE",
+          "usubjid": "042-S02-004",
+          "seq": 1
+        }
+      ],
+      "alternatives": [
+        "Re-code as serious and expedite report within 24 h",
+        "Accept AESER=N as entered - rejected: contradicts protocol section 6"
+      ]
+    },
+    {
+      "code": "SAE_UNESCALATED",
+      "usubjid": "042-S12-005",
+      "site": "S12",
+      "severity": "CRITICAL",
+      "summary": "Serious adverse event 'Pneumonia' confirmed for subject 042-S12-005.",
+      "evidence": [
+        {
+          "domain": "AE",
+          "usubjid": "042-S12-005",
+          "seq": 1
+        }
+      ],
+      "alternatives": [
+        "Re-code as serious and expedite report within 24 h",
+        "Accept AESER=N as entered - rejected: contradicts protocol section 6"
+      ]
+    },
+    {
+      "code": "SAE_UNESCALATED",
+      "usubjid": "042-S05-006",
+      "site": "S05",
+      "severity": "CRITICAL",
+      "summary": "Serious adverse event 'Myocardial infarction' confirmed for subject 042-S05-006.",
+      "evidence": [
+        {
+          "domain": "AE",
+          "usubjid": "042-S05-006",
+          "seq": 1
+        }
+      ],
+      "alternatives": [
+        "Re-code as serious and expedite report within 24 h",
+        "Accept AESER=N as entered - rejected: contradicts protocol section 6"
+      ]
+    },
+    {
+      "code": "SAE_UNESCALATED",
+      "usubjid": "042-S01-007",
+      "site": "S01",
+      "severity": "CRITICAL",
+      "summary": "Serious adverse event 'Myocardial infarction' confirmed for subject 042-S01-007.",
+      "evidence": [
+        {
+          "domain": "AE",
+          "usubjid": "042-S01-007",
+          "seq": 1
+        }
+      ],
+      "alternatives": [
+        "Re-code as serious and expedite report within 24 h",
+        "Accept AESER=N as entered - rejected: contradicts protocol section 6"
+      ]
+    },
+    {
+      "code": "DOSING_ERROR",
+      "site": "S09",
+      "severity": "HIGH",
+      "summary": "Site S09 has systematic dosing deviations across multiple subjects (18 records).",
+      "evidence": [
+        {
+          "domain": "EX",
+          "site": "S09",
+          "count": 18
+        }
+      ],
+      "alternatives": [
+        "Issue corrective action and retrain site dispensing staff",
+        "Accept site error rate without intervention - rejected: systemic GCP non-compliance"
+      ]
+    }
+  ],
+  "queries": [
+    {
+      "id": "Q-4416",
+      "usubjid": "042-S11-005",
+      "domain": "AE",
+      "seq": 1,
+      "cut": 6,
+      "text": "AE 'Fatigue' starts 2026-01-08, before first dose 2026-01-13. Please verify the AE start date against source and correct or confirm.",
+      "status": "CLOSED",
+      "response": "Date entry error confirmed; AE start date corrected to after first dose."
+    },
+    {
+      "id": "Q-1323",
+      "usubjid": "042-S02-010",
+      "domain": "AE",
+      "seq": 1,
+      "cut": 6,
+      "text": "AE 'Hypoglycaemia' starts 2026-01-16, before first dose 2026-01-21. Please verify the AE start date against source and correct or confirm.",
+      "status": "CLOSED",
+      "response": "Date entry error confirmed; AE start date corrected to after first dose."
+    },
+    {
+      "id": "Q-2809",
+      "usubjid": "042-S09-010",
+      "domain": "AE",
+      "seq": 1,
+      "cut": 6,
+      "text": "AE 'Fatigue' starts 2026-01-15, before first dose 2026-01-20. Please verify the AE start date against source and correct or confirm.",
+      "status": "CLOSED",
+      "response": "Date entry error confirmed; AE start date corrected to after first dose."
+    },
+    {
+      "id": "Q-HOLD",
+      "usubjid": "042-S11-010",
+      "domain": "AE",
+      "seq": 3,
+      "cut": 6,
+      "text": "AE 'Headache' starts 2026-01-26, before first dose 2026-01-27. Please verify the AE start date against source and correct or confirm.",
+      "status": "OPEN",
+      "response": "Site is currently on hold; query pending response."
+    },
+    {
+      "id": "Q-0842",
+      "usubjid": "042-S10-012",
+      "domain": "AE",
+      "seq": 1,
+      "cut": 6,
+      "text": "AE 'Headache' starts 2026-01-24, before first dose 2026-01-31. Please verify the AE start date against source and correct or confirm.",
+      "status": "CLOSED",
+      "response": "Date entry error confirmed; AE start date corrected to after first dose."
+    },
+    {
+      "id": "Q-2155",
+      "usubjid": "042-S09-013",
+      "domain": "AE",
+      "seq": 1,
+      "cut": 6,
+      "text": "AE 'Back pain' starts 2026-01-10, before first dose 2026-01-18. Please verify the AE start date against source and correct or confirm.",
+      "status": "CLOSED",
+      "response": "Date entry error confirmed; AE start date corrected to after first dose."
+    },
+    {
+      "id": "Q-3999",
+      "usubjid": "042-S02-015",
+      "domain": "AE",
+      "seq": 1,
+      "cut": 6,
+      "text": "AE 'Urinary tract infection' starts 2026-01-20, before first dose 2026-01-22. Please verify the AE start date against source and correct or confirm.",
+      "status": "CLOSED",
+      "response": "Date entry error confirmed; AE start date corrected to after first dose."
+    },
+    {
+      "id": "Q-7071",
+      "usubjid": "042-S03-016",
+      "domain": "AE",
+      "seq": 1,
+      "cut": 6,
+      "text": "AE 'Hypoglycaemia' starts 2026-01-18, before first dose 2026-01-21. Please verify the AE start date against source and correct or confirm.",
+      "status": "CLOSED",
+      "response": "Date entry error confirmed; AE start date corrected to after first dose."
+    },
+    {
+      "id": "Q-9083",
+      "usubjid": "042-S07-016",
+      "domain": "AE",
+      "seq": 1,
+      "cut": 6,
+      "text": "AE 'Fatigue' starts 2026-01-24, before first dose 2026-02-02. Please verify the AE start date against source and correct or confirm.",
+      "status": "CLOSED",
+      "response": "Date entry error confirmed; AE start date corrected to after first dose."
+    },
+    {
+      "id": "Q-6589",
+      "usubjid": "042-S02-013",
+      "domain": "DM",
+      "seq": 1,
+      "cut": 6,
+      "text": "Subject demographic fingerprint matches dual enrollment 042-S05-021. Please verify whether subject is a dual enrollment.",
+      "status": "ANSWERED",
+      "response": "Subject confirmed enrolled at this site. Not aware of other enrolment."
+    },
+    {
+      "id": "Q-6936",
+      "usubjid": "042-S05-021",
+      "domain": "DM",
+      "seq": 1,
+      "cut": 6,
+      "text": "Subject demographic fingerprint matches dual enrollment 042-S02-013. Please verify whether subject is a dual enrollment.",
+      "status": "ANSWERED",
+      "response": "Subject confirmed enrolled at this site. Not aware of other enrolment."
+    },
+    {
+      "id": "Q-0192",
+      "usubjid": "042-S09-004",
+      "domain": "EX",
+      "seq": 2,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-4082",
+      "usubjid": "042-S09-004",
+      "domain": "EX",
+      "seq": 3,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-3364",
+      "usubjid": "042-S09-004",
+      "domain": "EX",
+      "seq": 4,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-5319",
+      "usubjid": "042-S09-005",
+      "domain": "EX",
+      "seq": 2,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-9102",
+      "usubjid": "042-S09-005",
+      "domain": "EX",
+      "seq": 3,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-0262",
+      "usubjid": "042-S09-005",
+      "domain": "EX",
+      "seq": 4,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-3298",
+      "usubjid": "042-S09-006",
+      "domain": "EX",
+      "seq": 2,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-8209",
+      "usubjid": "042-S09-006",
+      "domain": "EX",
+      "seq": 3,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-4827",
+      "usubjid": "042-S09-006",
+      "domain": "EX",
+      "seq": 4,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-4208",
+      "usubjid": "042-S09-009",
+      "domain": "EX",
+      "seq": 2,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-6603",
+      "usubjid": "042-S09-009",
+      "domain": "EX",
+      "seq": 3,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-6367",
+      "usubjid": "042-S09-009",
+      "domain": "EX",
+      "seq": 4,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-9706",
+      "usubjid": "042-S09-011",
+      "domain": "EX",
+      "seq": 2,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-1791",
+      "usubjid": "042-S09-011",
+      "domain": "EX",
+      "seq": 3,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-5102",
+      "usubjid": "042-S09-011",
+      "domain": "EX",
+      "seq": 4,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-7224",
+      "usubjid": "042-S09-014",
+      "domain": "EX",
+      "seq": 2,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-9927",
+      "usubjid": "042-S09-014",
+      "domain": "EX",
+      "seq": 3,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    },
+    {
+      "id": "Q-4337",
+      "usubjid": "042-S09-014",
+      "domain": "EX",
+      "seq": 4,
+      "cut": 6,
+      "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+      "status": "CLOSED",
+      "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+    }
+  ],
+  "compliance_deviations": [
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S03-001",
+      "site": "S03",
+      "visit": "SCREENING",
+      "actual_day": -18,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-001",
+      "site": "S05",
+      "visit": "WEEK2",
+      "actual_day": 10,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-001",
+      "site": "S05",
+      "visit": "WEEK4",
+      "actual_day": 24,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-001",
+      "site": "S09",
+      "visit": "WEEK8",
+      "actual_day": 63,
+      "target_day": 56,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S12-001",
+      "site": "S12",
+      "visit": "SCREENING",
+      "actual_day": -18,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S12-001",
+      "site": "S12",
+      "visit": "WEEK12",
+      "actual_day": 80,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-002",
+      "site": "S02",
+      "visit": "WEEK4",
+      "actual_day": 18,
+      "target_day": 28,
+      "difference": 10,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-002",
+      "site": "S06",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-002",
+      "site": "S06",
+      "visit": "WEEK2",
+      "actual_day": 25,
+      "target_day": 14,
+      "difference": 11,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-002",
+      "site": "S08",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-002",
+      "site": "S08",
+      "visit": "WEEK4",
+      "actual_day": 21,
+      "target_day": 28,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-002",
+      "site": "S09",
+      "visit": "WEEK8",
+      "actual_day": 63,
+      "target_day": 56,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S04-003",
+      "site": "S04",
+      "visit": "WEEK4",
+      "actual_day": 32,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-003",
+      "site": "S07",
+      "visit": "SCREENING",
+      "actual_day": -18,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-003",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 45,
+      "target_day": 56,
+      "difference": 11,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-003",
+      "site": "S08",
+      "visit": "WEEK2",
+      "actual_day": 18,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-003",
+      "site": "S08",
+      "visit": "WEEK4",
+      "actual_day": 21,
+      "target_day": 28,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-003",
+      "site": "S09",
+      "visit": "WEEK4",
+      "actual_day": 24,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-003",
+      "site": "S10",
+      "visit": "WEEK2",
+      "actual_day": 22,
+      "target_day": 14,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S12-003",
+      "site": "S12",
+      "visit": "WEEK12",
+      "actual_day": 88,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-004",
+      "site": "S01",
+      "visit": "WEEK2",
+      "actual_day": 10,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-004",
+      "site": "S01",
+      "visit": "WEEK8",
+      "actual_day": 49,
+      "target_day": 56,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-004",
+      "site": "S01",
+      "visit": "WEEK12",
+      "actual_day": 80,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-004",
+      "site": "S02",
+      "visit": "WEEK2",
+      "actual_day": 19,
+      "target_day": 14,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-004",
+      "site": "S06",
+      "visit": "WEEK2",
+      "actual_day": 9,
+      "target_day": 14,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-004",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 68,
+      "target_day": 56,
+      "difference": 12,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-004",
+      "site": "S08",
+      "visit": "WEEK4",
+      "actual_day": 39,
+      "target_day": 28,
+      "difference": 11,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-004",
+      "site": "S09",
+      "visit": "WEEK12",
+      "actual_day": 89,
+      "target_day": 84,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-004",
+      "site": "S10",
+      "visit": "WEEK4",
+      "actual_day": 24,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S12-004",
+      "site": "S12",
+      "visit": "WEEK2",
+      "actual_day": 10,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-005",
+      "site": "S02",
+      "visit": "WEEK8",
+      "actual_day": 62,
+      "target_day": 56,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-005",
+      "site": "S02",
+      "visit": "WEEK16",
+      "actual_day": 103,
+      "target_day": 112,
+      "difference": 9,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-005",
+      "site": "S07",
+      "visit": "WEEK2",
+      "actual_day": 19,
+      "target_day": 14,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-005",
+      "site": "S08",
+      "visit": "WEEK2",
+      "actual_day": 23,
+      "target_day": 14,
+      "difference": 9,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-005",
+      "site": "S08",
+      "visit": "WEEK8",
+      "actual_day": 47,
+      "target_day": 56,
+      "difference": 9,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-006",
+      "site": "S06",
+      "visit": "WEEK12",
+      "actual_day": 75,
+      "target_day": 84,
+      "difference": 9,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-006",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 51,
+      "target_day": 56,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-006",
+      "site": "S07",
+      "visit": "WEEK12",
+      "actual_day": 79,
+      "target_day": 84,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-007",
+      "site": "S01",
+      "visit": "WEEK4",
+      "actual_day": 22,
+      "target_day": 28,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-007",
+      "site": "S02",
+      "visit": "WEEK8",
+      "actual_day": 48,
+      "target_day": 56,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-007",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 48,
+      "target_day": 56,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-007",
+      "site": "S08",
+      "visit": "WEEK2",
+      "actual_day": 2,
+      "target_day": 14,
+      "difference": 12,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-007",
+      "site": "S08",
+      "visit": "WEEK4",
+      "actual_day": 24,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-007",
+      "site": "S09",
+      "visit": "WEEK8",
+      "actual_day": 62,
+      "target_day": 56,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-007",
+      "site": "S10",
+      "visit": "WEEK8",
+      "actual_day": 62,
+      "target_day": 56,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-008",
+      "site": "S01",
+      "visit": "WEEK4",
+      "actual_day": 24,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S03-008",
+      "site": "S03",
+      "visit": "WEEK2",
+      "actual_day": 9,
+      "target_day": 14,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S04-008",
+      "site": "S04",
+      "visit": "WEEK8",
+      "actual_day": 67,
+      "target_day": 56,
+      "difference": 11,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-008",
+      "site": "S06",
+      "visit": "WEEK2",
+      "actual_day": 10,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-008",
+      "site": "S06",
+      "visit": "WEEK8",
+      "actual_day": 48,
+      "target_day": 56,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-008",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 65,
+      "target_day": 56,
+      "difference": 9,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-008",
+      "site": "S08",
+      "visit": "WEEK2",
+      "actual_day": 4,
+      "target_day": 14,
+      "difference": 10,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-008",
+      "site": "S09",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-008",
+      "site": "S10",
+      "visit": "WEEK2",
+      "actual_day": 8,
+      "target_day": 14,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-009",
+      "site": "S02",
+      "visit": "WEEK2",
+      "actual_day": 18,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-009",
+      "site": "S02",
+      "visit": "WEEK8",
+      "actual_day": 69,
+      "target_day": 56,
+      "difference": 13,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S03-009",
+      "site": "S03",
+      "visit": "WEEK4",
+      "actual_day": 33,
+      "target_day": 28,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S04-009",
+      "site": "S04",
+      "visit": "WEEK8",
+      "actual_day": 65,
+      "target_day": 56,
+      "difference": 9,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-009",
+      "site": "S05",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-009",
+      "site": "S10",
+      "visit": "WEEK8",
+      "actual_day": 52,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-009",
+      "site": "S10",
+      "visit": "WEEK12",
+      "actual_day": 88,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S04-010",
+      "site": "S04",
+      "visit": "WEEK4",
+      "actual_day": 36,
+      "target_day": 28,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-010",
+      "site": "S05",
+      "visit": "WEEK8",
+      "actual_day": 52,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-010",
+      "site": "S06",
+      "visit": "SCREENING",
+      "actual_day": -18,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-010",
+      "site": "S06",
+      "visit": "WEEK8",
+      "actual_day": 52,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-010",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 60,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-010",
+      "site": "S08",
+      "visit": "WEEK4",
+      "actual_day": 22,
+      "target_day": 28,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-010",
+      "site": "S09",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-010",
+      "site": "S09",
+      "visit": "WEEK12",
+      "actual_day": 88,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-010",
+      "site": "S10",
+      "visit": "WEEK12",
+      "actual_day": 88,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-011",
+      "site": "S01",
+      "visit": "WEEK4",
+      "actual_day": 36,
+      "target_day": 28,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S03-011",
+      "site": "S03",
+      "visit": "WEEK2",
+      "actual_day": 4,
+      "target_day": 14,
+      "difference": 10,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-011",
+      "site": "S05",
+      "visit": "WEEK4",
+      "actual_day": 33,
+      "target_day": 28,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-011",
+      "site": "S06",
+      "visit": "WEEK2",
+      "actual_day": 20,
+      "target_day": 14,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-011",
+      "site": "S07",
+      "visit": "WEEK4",
+      "actual_day": 16,
+      "target_day": 28,
+      "difference": 12,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-011",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 52,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-011",
+      "site": "S09",
+      "visit": "WEEK8",
+      "actual_day": 51,
+      "target_day": 56,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-011",
+      "site": "S10",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-011",
+      "site": "S10",
+      "visit": "WEEK8",
+      "actual_day": 63,
+      "target_day": 56,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-011",
+      "site": "S10",
+      "visit": "WEEK16",
+      "actual_day": 104,
+      "target_day": 112,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-012",
+      "site": "S01",
+      "visit": "WEEK2",
+      "actual_day": 8,
+      "target_day": 14,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-012",
+      "site": "S01",
+      "visit": "WEEK12",
+      "actual_day": 77,
+      "target_day": 84,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-012",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 67,
+      "target_day": 56,
+      "difference": 11,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-012",
+      "site": "S09",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-012",
+      "site": "S10",
+      "visit": "WEEK8",
+      "actual_day": 45,
+      "target_day": 56,
+      "difference": 11,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-013",
+      "site": "S01",
+      "visit": "WEEK2",
+      "actual_day": 18,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S04-013",
+      "site": "S04",
+      "visit": "WEEK8",
+      "actual_day": 64,
+      "target_day": 56,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-013",
+      "site": "S05",
+      "visit": "WEEK8",
+      "actual_day": 60,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-013",
+      "site": "S06",
+      "visit": "WEEK8",
+      "actual_day": 44,
+      "target_day": 56,
+      "difference": 12,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-013",
+      "site": "S07",
+      "visit": "WEEK4",
+      "actual_day": 39,
+      "target_day": 28,
+      "difference": 11,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-013",
+      "site": "S10",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S12-013",
+      "site": "S12",
+      "visit": "WEEK12",
+      "actual_day": 80,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-014",
+      "site": "S01",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-014",
+      "site": "S01",
+      "visit": "WEEK8",
+      "actual_day": 60,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-014",
+      "site": "S05",
+      "visit": "WEEK2",
+      "actual_day": 18,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-014",
+      "site": "S07",
+      "visit": "WEEK4",
+      "actual_day": 38,
+      "target_day": 28,
+      "difference": 10,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-014",
+      "site": "S09",
+      "visit": "WEEK8",
+      "actual_day": 51,
+      "target_day": 56,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-014",
+      "site": "S10",
+      "visit": "WEEK4",
+      "actual_day": 19,
+      "target_day": 28,
+      "difference": 9,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-015",
+      "site": "S01",
+      "visit": "WEEK8",
+      "actual_day": 44,
+      "target_day": 56,
+      "difference": 12,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-015",
+      "site": "S01",
+      "visit": "WEEK12",
+      "actual_day": 80,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S03-015",
+      "site": "S03",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-015",
+      "site": "S05",
+      "visit": "WEEK4",
+      "actual_day": 20,
+      "target_day": 28,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-015",
+      "site": "S05",
+      "visit": "WEEK12",
+      "actual_day": 91,
+      "target_day": 84,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-015",
+      "site": "S06",
+      "visit": "WEEK4",
+      "actual_day": 32,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-015",
+      "site": "S07",
+      "visit": "WEEK2",
+      "actual_day": 20,
+      "target_day": 14,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-015",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 48,
+      "target_day": 56,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-015",
+      "site": "S08",
+      "visit": "WEEK4",
+      "actual_day": 38,
+      "target_day": 28,
+      "difference": 10,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-015",
+      "site": "S09",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-015",
+      "site": "S10",
+      "visit": "WEEK8",
+      "actual_day": 64,
+      "target_day": 56,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-016",
+      "site": "S02",
+      "visit": "SCREENING",
+      "actual_day": -18,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S03-016",
+      "site": "S03",
+      "visit": "WEEK8",
+      "actual_day": 61,
+      "target_day": 56,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S04-016",
+      "site": "S04",
+      "visit": "WEEK2",
+      "actual_day": 10,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S04-016",
+      "site": "S04",
+      "visit": "WEEK4",
+      "actual_day": 24,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-016",
+      "site": "S06",
+      "visit": "WEEK2",
+      "actual_day": 4,
+      "target_day": 14,
+      "difference": 10,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-016",
+      "site": "S07",
+      "visit": "WEEK8",
+      "actual_day": 60,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-017",
+      "site": "S01",
+      "visit": "WEEK12",
+      "actual_day": 88,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-017",
+      "site": "S02",
+      "visit": "WEEK2",
+      "actual_day": 22,
+      "target_day": 14,
+      "difference": 8,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S02-017",
+      "site": "S02",
+      "visit": "WEEK4",
+      "actual_day": 32,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S04-017",
+      "site": "S04",
+      "visit": "SCREENING",
+      "actual_day": -10,
+      "target_day": -14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-017",
+      "site": "S05",
+      "visit": "WEEK12",
+      "actual_day": 93,
+      "target_day": 84,
+      "difference": 9,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-017",
+      "site": "S06",
+      "visit": "WEEK8",
+      "actual_day": 60,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-017",
+      "site": "S08",
+      "visit": "WEEK2",
+      "actual_day": 5,
+      "target_day": 14,
+      "difference": 9,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-017",
+      "site": "S09",
+      "visit": "WEEK8",
+      "actual_day": 67,
+      "target_day": 56,
+      "difference": 11,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S05-018",
+      "site": "S05",
+      "visit": "WEEK12",
+      "actual_day": 91,
+      "target_day": 84,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-018",
+      "site": "S06",
+      "visit": "WEEK4",
+      "actual_day": 32,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S08-018",
+      "site": "S08",
+      "visit": "WEEK2",
+      "actual_day": 21,
+      "target_day": 14,
+      "difference": 7,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S10-018",
+      "site": "S10",
+      "visit": "WEEK12",
+      "actual_day": 90,
+      "target_day": 84,
+      "difference": 6,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-019",
+      "site": "S01",
+      "visit": "WEEK4",
+      "actual_day": 32,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S01-019",
+      "site": "S01",
+      "visit": "WEEK8",
+      "actual_day": 52,
+      "target_day": 56,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S03-019",
+      "site": "S03",
+      "visit": "WEEK2",
+      "actual_day": 18,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S04-019",
+      "site": "S04",
+      "visit": "WEEK4",
+      "actual_day": 24,
+      "target_day": 28,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S06-019",
+      "site": "S06",
+      "visit": "WEEK4",
+      "actual_day": 23,
+      "target_day": 28,
+      "difference": 5,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-019",
+      "site": "S07",
+      "visit": "WEEK2",
+      "actual_day": 10,
+      "target_day": 14,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S07-020",
+      "site": "S07",
+      "visit": "WEEK12",
+      "actual_day": 80,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S09-020",
+      "site": "S09",
+      "visit": "WEEK12",
+      "actual_day": 88,
+      "target_day": 84,
+      "difference": 4,
+      "allowed_window": 3
+    },
+    {
+      "category": "visit_windows",
+      "usubjid": "042-S12-020",
+      "site": "S12",
+      "visit": "WEEK2",
+      "actual_day": 24,
+      "target_day": 14,
+      "difference": 10,
+      "allowed_window": 3
+    },
+    {
+      "category": "prohibited_meds",
+      "usubjid": "042-S08-001",
+      "site": "S08",
+      "rule": "Prohibited SYSTEMIC_GLUCOCORTICOID under Protocol v2",
+      "treatment": "Prednisolone",
+      "evidence": [
+        {
+          "domain": "CM",
+          "usubjid": "042-S08-001",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "prohibited_meds",
+      "usubjid": "042-S11-002",
+      "site": "S11",
+      "rule": "Prohibited SYSTEMIC_GLUCOCORTICOID under Protocol v2",
+      "treatment": "Prednisolone",
+      "evidence": [
+        {
+          "domain": "CM",
+          "usubjid": "042-S11-002",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "prohibited_meds",
+      "usubjid": "042-S12-002",
+      "site": "S12",
+      "rule": "Prohibited SYSTEMIC_GLUCOCORTICOID under Protocol v2",
+      "treatment": "Prednisolone",
+      "evidence": [
+        {
+          "domain": "CM",
+          "usubjid": "042-S12-002",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "prohibited_meds",
+      "usubjid": "042-S09-005",
+      "site": "S09",
+      "rule": "Prohibited SYSTEMIC_GLUCOCORTICOID under Protocol v2",
+      "treatment": "Prednisolone",
+      "evidence": [
+        {
+          "domain": "CM",
+          "usubjid": "042-S09-005",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "prohibited_meds",
+      "usubjid": "042-S02-010",
+      "site": "S02",
+      "rule": "Prohibited SYSTEMIC_GLUCOCORTICOID under Protocol v2",
+      "treatment": "Prednisolone",
+      "evidence": [
+        {
+          "domain": "CM",
+          "usubjid": "042-S02-010",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "prohibited_meds",
+      "usubjid": "042-S09-012",
+      "site": "S09",
+      "rule": "Prohibited SYSTEMIC_GLUCOCORTICOID under Protocol v2",
+      "treatment": "Prednisolone",
+      "evidence": [
+        {
+          "domain": "CM",
+          "usubjid": "042-S09-012",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "prohibited_meds",
+      "usubjid": "042-S09-013",
+      "site": "S09",
+      "rule": "Prohibited SYSTEMIC_GLUCOCORTICOID under Protocol v2",
+      "treatment": "Prednisolone",
+      "evidence": [
+        {
+          "domain": "CM",
+          "usubjid": "042-S09-013",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "eligibility",
+      "usubjid": "042-S04-003",
+      "site": "S04",
+      "rule": "Age 18\u201375 years at screening",
+      "actual": "Age 17.0",
+      "evidence": [
+        {
+          "domain": "DM",
+          "usubjid": "042-S04-003",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "eligibility",
+      "usubjid": "042-S12-015",
+      "site": "S12",
+      "rule": "Age 18\u201375 years at screening",
+      "actual": "Age 17.0",
+      "evidence": [
+        {
+          "domain": "DM",
+          "usubjid": "042-S12-015",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "eligibility",
+      "usubjid": "042-S04-017",
+      "site": "S04",
+      "rule": "Age 18\u201375 years at screening",
+      "actual": "Age 17.0",
+      "evidence": [
+        {
+          "domain": "DM",
+          "usubjid": "042-S04-017",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "eligibility",
+      "usubjid": "042-S05-017",
+      "site": "S05",
+      "rule": "Age 18\u201375 years at screening",
+      "actual": "Age 17.0",
+      "evidence": [
+        {
+          "domain": "DM",
+          "usubjid": "042-S05-017",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "eligibility",
+      "usubjid": "042-S08-020",
+      "site": "S08",
+      "rule": "Age 18\u201375 years at screening",
+      "actual": "Age 17.0",
+      "evidence": [
+        {
+          "domain": "DM",
+          "usubjid": "042-S08-020",
+          "seq": 1
+        }
+      ]
+    },
+    {
+      "category": "renal_exclusion",
+      "usubjid": "042-S01-003",
+      "site": "S01",
+      "rule": "Creatinine > 1.5 mg/dL at screening (Protocol \u00a73)",
+      "actual": "1.62 mg/dL",
+      "evidence": [
+        {
+          "domain": "LB",
+          "usubjid": "042-S01-003",
+          "seq": 6
+        }
+      ]
+    },
+    {
+      "category": "renal_exclusion",
+      "usubjid": "042-S06-003",
+      "site": "S06",
+      "rule": "Creatinine > 1.5 mg/dL at screening (Protocol \u00a73)",
+      "actual": "2.01 mg/dL",
+      "evidence": [
+        {
+          "domain": "LB",
+          "usubjid": "042-S06-003",
+          "seq": 6
+        }
+      ]
+    },
+    {
+      "category": "renal_exclusion",
+      "usubjid": "042-S06-008",
+      "site": "S06",
+      "rule": "Creatinine > 1.5 mg/dL at screening (Protocol \u00a73)",
+      "actual": "1.69 mg/dL",
+      "evidence": [
+        {
+          "domain": "LB",
+          "usubjid": "042-S06-008",
+          "seq": 6
+        }
+      ]
+    },
+    {
+      "category": "renal_exclusion",
+      "usubjid": "042-S11-017",
+      "site": "S11",
+      "rule": "Creatinine > 1.5 mg/dL at screening (Protocol \u00a73)",
+      "actual": "1.85 mg/dL",
+      "evidence": [
+        {
+          "domain": "LB",
+          "usubjid": "042-S11-017",
+          "seq": 6
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-004",
+      "site": "S09",
+      "dose": 20.0,
+      "arm": "DRUG",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-004",
+          "seq": 2
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-004",
+      "site": "S09",
+      "dose": 20.0,
+      "arm": "DRUG",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-004",
+          "seq": 3
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-004",
+      "site": "S09",
+      "dose": 20.0,
+      "arm": "DRUG",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-004",
+          "seq": 4
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-005",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-005",
+          "seq": 2
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-005",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-005",
+          "seq": 3
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-005",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-005",
+          "seq": 4
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-006",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-006",
+          "seq": 2
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-006",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-006",
+          "seq": 3
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-006",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-006",
+          "seq": 4
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-009",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-009",
+          "seq": 2
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-009",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-009",
+          "seq": 3
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-009",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-009",
+          "seq": 4
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-011",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-011",
+          "seq": 2
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-011",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-011",
+          "seq": 3
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-011",
+      "site": "S09",
+      "dose": 10.0,
+      "arm": "PLACEBO",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-011",
+          "seq": 4
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-014",
+      "site": "S09",
+      "dose": 20.0,
+      "arm": "DRUG",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-014",
+          "seq": 2
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-014",
+      "site": "S09",
+      "dose": 20.0,
+      "arm": "DRUG",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-014",
+          "seq": 3
+        }
+      ]
+    },
+    {
+      "category": "dosing",
+      "usubjid": "042-S09-014",
+      "site": "S09",
+      "dose": 20.0,
+      "arm": "DRUG",
+      "evidence": [
+        {
+          "domain": "EX",
+          "usubjid": "042-S09-014",
+          "seq": 4
+        }
+      ]
+    }
+  ],
+  "human_gate_decisions": [
+    {
+      "code": "HYS_LAW_CANDIDATE",
+      "target": "042-S05-003",
+      "decision": "APPROVED",
+      "reason": "Consistent with Hy's law; report to safety and hold dosing pending review."
+    },
+    {
+      "code": "SAE_MISCODED",
+      "target": "042-S02-004",
+      "decision": "APPROVED",
+      "reason": "Serious adverse event confirmed; expedited report within 24 h."
+    },
+    {
+      "code": "SAE_UNESCALATED",
+      "target": "042-S12-005",
+      "decision": "APPROVED",
+      "reason": "Serious adverse event confirmed; expedited report within 24 h."
+    },
+    {
+      "code": "SAE_UNESCALATED",
+      "target": "042-S05-006",
+      "decision": "APPROVED",
+      "reason": "Serious adverse event confirmed; expedited report within 24 h."
+    },
+    {
+      "code": "SAE_UNESCALATED",
+      "target": "042-S01-007",
+      "decision": "APPROVED",
+      "reason": "Serious adverse event confirmed; expedited report within 24 h."
+    },
+    {
+      "code": "DOSING_ERROR",
+      "target": "S09",
+      "decision": "APPROVED",
+      "reason": "Site-level deviation; issue corrective action and retrain site staff."
+    }
+  ],
+  "trace": [
+    {
+      "node": "detect",
+      "message": "56 findings under protocol v2 - safety 6, data 49, site 1",
+      "timestamp": "2026-09-19T07:10:16.171410",
+      "details": {
+        "total": 56,
+        "safety": 6,
+        "data": 49,
+        "site": 1,
+        "cut": 6,
+        "protocol_version": 2
+      }
+    },
+    {
+      "node": "medical_review",
+      "message": "6 escalation drafts; 1 liver candidate kept monitor-only (screening ALT already elevated)",
+      "timestamp": "2026-09-19T07:10:16.171410",
+      "details": {
+        "escalations_count": 6,
+        "monitor_only_count": 1
+      }
+    },
+    {
+      "node": "data_manager",
+      "message": "29 queries raised (26 confirmed by site, 3 unanswered - site on hold); 0 duplicates",
+      "timestamp": "2026-09-19T07:10:16.171410",
+      "details": {
+        "raised_count": 29,
+        "confirmed_count": 26,
+        "unanswered_count": 3,
+        "duplicates_prevented": 0
+      }
+    },
+    {
+      "node": "compliance",
+      "message": "170 deviations under v2: 136 visit windows, 7 prohibited medicines, 5 eligibility, 4 renal exclusion",
+      "timestamp": "2026-09-19T07:10:16.172517",
+      "details": {
+        "total_deviations": 170,
+        "visit_windows": 136,
+        "prohibited_meds": 7,
+        "eligibility": 5,
+        "renal_exclusion": 4,
+        "protocol_version": 2
+      }
+    },
+    {
+      "node": "human_gate",
+      "message": "6 escalations await the medical monitor",
+      "timestamp": "2026-09-19T07:10:16.172517",
+      "details": {
+        "pending_count": 6
+      }
+    },
+    {
+      "node": "human_gate",
+      "message": "HYS_LAW_CANDIDATE 042-S05-003 -> APPROVED: Consistent with Hy's law; report to safety and hold dosing pending review.",
+      "timestamp": "2026-09-19T07:10:16.172517",
+      "details": {
+        "code": "HYS_LAW_CANDIDATE",
+        "target": "042-S05-003",
+        "decision": "APPROVED",
+        "reason": "Consistent with Hy's law; report to safety and hold dosing pending review."
+      }
+    },
+    {
+      "node": "human_gate",
+      "message": "SAE_MISCODED 042-S02-004 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.",
+      "timestamp": "2026-09-19T07:10:16.172517",
+      "details": {
+        "code": "SAE_MISCODED",
+        "target": "042-S02-004",
+        "decision": "APPROVED",
+        "reason": "Serious adverse event confirmed; expedited report within 24 h."
+      }
+    },
+    {
+      "node": "human_gate",
+      "message": "SAE_UNESCALATED 042-S12-005 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.",
+      "timestamp": "2026-09-19T07:10:16.172517",
+      "details": {
+        "code": "SAE_UNESCALATED",
+        "target": "042-S12-005",
+        "decision": "APPROVED",
+        "reason": "Serious adverse event confirmed; expedited report within 24 h."
+      }
+    },
+    {
+      "node": "human_gate",
+      "message": "SAE_UNESCALATED 042-S05-006 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.",
+      "timestamp": "2026-09-19T07:10:16.172517",
+      "details": {
+        "code": "SAE_UNESCALATED",
+        "target": "042-S05-006",
+        "decision": "APPROVED",
+        "reason": "Serious adverse event confirmed; expedited report within 24 h."
+      }
+    },
+    {
+      "node": "human_gate",
+      "message": "SAE_UNESCALATED 042-S01-007 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.",
+      "timestamp": "2026-09-19T07:10:16.172517",
+      "details": {
+        "code": "SAE_UNESCALATED",
+        "target": "042-S01-007",
+        "decision": "APPROVED",
+        "reason": "Serious adverse event confirmed; expedited report within 24 h."
+      }
+    },
+    {
+      "node": "human_gate",
+      "message": "DOSING_ERROR S09 -> APPROVED: Site-level deviation; issue corrective action and retrain site staff.",
+      "timestamp": "2026-09-19T07:10:16.172517",
+      "details": {
+        "code": "DOSING_ERROR",
+        "target": "S09",
+        "decision": "APPROVED",
+        "reason": "Site-level deviation; issue corrective action and retrain site staff."
+      }
+    },
+    {
+      "node": "execute",
+      "message": "cycle complete: 56 findings, 6 escalations, 29 queries, 170 deviations",
+      "timestamp": "2026-09-19T07:10:16.172517",
+      "details": {
+        "cycle": 1,
+        "cut": 6,
+        "protocol_version": 2,
+        "findings_count": 56,
+        "escalations_count": 6,
+        "queries_count": 29,
+        "compliance_deviations_count": 170
+      }
+    }
+  ]
+}

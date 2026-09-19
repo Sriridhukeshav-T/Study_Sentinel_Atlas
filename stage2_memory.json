@@ -1,0 +1,595 @@
+{
+  "cycle_count": 3,
+  "last_cut": 6,
+  "raised_queries": {
+    "AE|042-S11-005|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-4416",
+        "usubjid": "042-S11-005",
+        "domain": "AE",
+        "seq": 1,
+        "cut": 6,
+        "text": "AE 'Fatigue' starts 2026-01-08, before first dose 2026-01-13. Please verify the AE start date against source and correct or confirm.",
+        "status": "CLOSED",
+        "response": "Date entry error confirmed; AE start date corrected to after first dose."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "AE|042-S02-010|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-1323",
+        "usubjid": "042-S02-010",
+        "domain": "AE",
+        "seq": 1,
+        "cut": 6,
+        "text": "AE 'Hypoglycaemia' starts 2026-01-16, before first dose 2026-01-21. Please verify the AE start date against source and correct or confirm.",
+        "status": "CLOSED",
+        "response": "Date entry error confirmed; AE start date corrected to after first dose."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "AE|042-S09-010|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-2809",
+        "usubjid": "042-S09-010",
+        "domain": "AE",
+        "seq": 1,
+        "cut": 6,
+        "text": "AE 'Fatigue' starts 2026-01-15, before first dose 2026-01-20. Please verify the AE start date against source and correct or confirm.",
+        "status": "CLOSED",
+        "response": "Date entry error confirmed; AE start date corrected to after first dose."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "AE|042-S11-010|3": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-HOLD",
+        "usubjid": "042-S11-010",
+        "domain": "AE",
+        "seq": 3,
+        "cut": 6,
+        "text": "AE 'Headache' starts 2026-01-26, before first dose 2026-01-27. Please verify the AE start date against source and correct or confirm.",
+        "status": "OPEN",
+        "response": "Site is currently on hold; query pending response."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "AE|042-S10-012|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-0842",
+        "usubjid": "042-S10-012",
+        "domain": "AE",
+        "seq": 1,
+        "cut": 6,
+        "text": "AE 'Headache' starts 2026-01-24, before first dose 2026-01-31. Please verify the AE start date against source and correct or confirm.",
+        "status": "CLOSED",
+        "response": "Date entry error confirmed; AE start date corrected to after first dose."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "AE|042-S09-013|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-2155",
+        "usubjid": "042-S09-013",
+        "domain": "AE",
+        "seq": 1,
+        "cut": 6,
+        "text": "AE 'Back pain' starts 2026-01-10, before first dose 2026-01-18. Please verify the AE start date against source and correct or confirm.",
+        "status": "CLOSED",
+        "response": "Date entry error confirmed; AE start date corrected to after first dose."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "AE|042-S02-015|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-3999",
+        "usubjid": "042-S02-015",
+        "domain": "AE",
+        "seq": 1,
+        "cut": 6,
+        "text": "AE 'Urinary tract infection' starts 2026-01-20, before first dose 2026-01-22. Please verify the AE start date against source and correct or confirm.",
+        "status": "CLOSED",
+        "response": "Date entry error confirmed; AE start date corrected to after first dose."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "AE|042-S03-016|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-7071",
+        "usubjid": "042-S03-016",
+        "domain": "AE",
+        "seq": 1,
+        "cut": 6,
+        "text": "AE 'Hypoglycaemia' starts 2026-01-18, before first dose 2026-01-21. Please verify the AE start date against source and correct or confirm.",
+        "status": "CLOSED",
+        "response": "Date entry error confirmed; AE start date corrected to after first dose."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "AE|042-S07-016|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-9083",
+        "usubjid": "042-S07-016",
+        "domain": "AE",
+        "seq": 1,
+        "cut": 6,
+        "text": "AE 'Fatigue' starts 2026-01-24, before first dose 2026-02-02. Please verify the AE start date against source and correct or confirm.",
+        "status": "CLOSED",
+        "response": "Date entry error confirmed; AE start date corrected to after first dose."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "DM|042-S02-013|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-6589",
+        "usubjid": "042-S02-013",
+        "domain": "DM",
+        "seq": 1,
+        "cut": 6,
+        "text": "Subject demographic fingerprint matches dual enrollment 042-S05-021. Please verify whether subject is a dual enrollment.",
+        "status": "ANSWERED",
+        "response": "Subject confirmed enrolled at this site. Not aware of other enrolment."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "DM|042-S05-021|1": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-6936",
+        "usubjid": "042-S05-021",
+        "domain": "DM",
+        "seq": 1,
+        "cut": 6,
+        "text": "Subject demographic fingerprint matches dual enrollment 042-S02-013. Please verify whether subject is a dual enrollment.",
+        "status": "ANSWERED",
+        "response": "Subject confirmed enrolled at this site. Not aware of other enrolment."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-004|2": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-0192",
+        "usubjid": "042-S09-004",
+        "domain": "EX",
+        "seq": 2,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-004|3": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-4082",
+        "usubjid": "042-S09-004",
+        "domain": "EX",
+        "seq": 3,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-004|4": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-3364",
+        "usubjid": "042-S09-004",
+        "domain": "EX",
+        "seq": 4,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-005|2": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-5319",
+        "usubjid": "042-S09-005",
+        "domain": "EX",
+        "seq": 2,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-005|3": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-9102",
+        "usubjid": "042-S09-005",
+        "domain": "EX",
+        "seq": 3,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-005|4": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-0262",
+        "usubjid": "042-S09-005",
+        "domain": "EX",
+        "seq": 4,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-006|2": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-3298",
+        "usubjid": "042-S09-006",
+        "domain": "EX",
+        "seq": 2,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-006|3": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-8209",
+        "usubjid": "042-S09-006",
+        "domain": "EX",
+        "seq": 3,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-006|4": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-4827",
+        "usubjid": "042-S09-006",
+        "domain": "EX",
+        "seq": 4,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-009|2": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-4208",
+        "usubjid": "042-S09-009",
+        "domain": "EX",
+        "seq": 2,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-009|3": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-6603",
+        "usubjid": "042-S09-009",
+        "domain": "EX",
+        "seq": 3,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-009|4": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-6367",
+        "usubjid": "042-S09-009",
+        "domain": "EX",
+        "seq": 4,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-011|2": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-9706",
+        "usubjid": "042-S09-011",
+        "domain": "EX",
+        "seq": 2,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-011|3": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-1791",
+        "usubjid": "042-S09-011",
+        "domain": "EX",
+        "seq": 3,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-011|4": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-5102",
+        "usubjid": "042-S09-011",
+        "domain": "EX",
+        "seq": 4,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-014|2": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-7224",
+        "usubjid": "042-S09-014",
+        "domain": "EX",
+        "seq": 2,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-014|3": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-9927",
+        "usubjid": "042-S09-014",
+        "domain": "EX",
+        "seq": 3,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    },
+    "EX|042-S09-014|4": {
+      "cycle": 1,
+      "query": {
+        "id": "Q-4337",
+        "usubjid": "042-S09-014",
+        "domain": "EX",
+        "seq": 4,
+        "cut": 6,
+        "text": "Administered dose recorded does not match protocol arm. Please verify dose administered against source and confirm or log deviation.",
+        "status": "CLOSED",
+        "response": "Dose transcription error confirmed at site; source shows 20 mg administered \u2014 deviation logged."
+      },
+      "timestamp": "2026-09-19T07:10:16.171410"
+    }
+  },
+  "raised_escalations": {
+    "HYS_LAW_CANDIDATE|042-S05-003": {
+      "cycle": 1,
+      "escalation": {
+        "code": "HYS_LAW_CANDIDATE",
+        "usubjid": "042-S05-003",
+        "site": "S05",
+        "severity": "CRITICAL",
+        "summary": "Potential Hy's law criteria met for subject 042-S05-003 at site S05 (ALT >3xULN and BILI >2xULN within 14 days). Dosing held pending review.",
+        "evidence": [
+          {
+            "domain": "LB",
+            "usubjid": "042-S05-003",
+            "seq": 31
+          },
+          {
+            "domain": "LB",
+            "usubjid": "042-S05-003",
+            "seq": 32
+          },
+          {
+            "domain": "LB",
+            "usubjid": "042-S05-003",
+            "seq": 33
+          }
+        ],
+        "alternatives": [
+          "Report to sponsor safety desk and hold dosing",
+          "Continue study drug with weekly liver panel monitoring - rejected: violates protocol section 7"
+        ]
+      },
+      "timestamp": "2026-09-19T07:10:16.172517"
+    },
+    "SAE_MISCODED|042-S02-004": {
+      "cycle": 1,
+      "escalation": {
+        "code": "SAE_MISCODED",
+        "usubjid": "042-S02-004",
+        "site": "S02",
+        "severity": "CRITICAL",
+        "summary": "'Cellulitis' recorded with AESHOSP=Y and AESER=N. Hospitalisation makes this serious under protocol section 6; the 24-hour reporting clock applies.",
+        "evidence": [
+          {
+            "domain": "AE",
+            "usubjid": "042-S02-004",
+            "seq": 1
+          }
+        ],
+        "alternatives": [
+          "Re-code as serious and expedite report within 24 h",
+          "Accept AESER=N as entered - rejected: contradicts protocol section 6"
+        ]
+      },
+      "timestamp": "2026-09-19T07:10:16.172517"
+    },
+    "SAE_UNESCALATED|042-S12-005": {
+      "cycle": 1,
+      "escalation": {
+        "code": "SAE_UNESCALATED",
+        "usubjid": "042-S12-005",
+        "site": "S12",
+        "severity": "CRITICAL",
+        "summary": "Serious adverse event 'Pneumonia' confirmed for subject 042-S12-005.",
+        "evidence": [
+          {
+            "domain": "AE",
+            "usubjid": "042-S12-005",
+            "seq": 1
+          }
+        ],
+        "alternatives": [
+          "Re-code as serious and expedite report within 24 h",
+          "Accept AESER=N as entered - rejected: contradicts protocol section 6"
+        ]
+      },
+      "timestamp": "2026-09-19T07:10:16.172517"
+    },
+    "SAE_UNESCALATED|042-S05-006": {
+      "cycle": 1,
+      "escalation": {
+        "code": "SAE_UNESCALATED",
+        "usubjid": "042-S05-006",
+        "site": "S05",
+        "severity": "CRITICAL",
+        "summary": "Serious adverse event 'Myocardial infarction' confirmed for subject 042-S05-006.",
+        "evidence": [
+          {
+            "domain": "AE",
+            "usubjid": "042-S05-006",
+            "seq": 1
+          }
+        ],
+        "alternatives": [
+          "Re-code as serious and expedite report within 24 h",
+          "Accept AESER=N as entered - rejected: contradicts protocol section 6"
+        ]
+      },
+      "timestamp": "2026-09-19T07:10:16.172517"
+    },
+    "SAE_UNESCALATED|042-S01-007": {
+      "cycle": 1,
+      "escalation": {
+        "code": "SAE_UNESCALATED",
+        "usubjid": "042-S01-007",
+        "site": "S01",
+        "severity": "CRITICAL",
+        "summary": "Serious adverse event 'Myocardial infarction' confirmed for subject 042-S01-007.",
+        "evidence": [
+          {
+            "domain": "AE",
+            "usubjid": "042-S01-007",
+            "seq": 1
+          }
+        ],
+        "alternatives": [
+          "Re-code as serious and expedite report within 24 h",
+          "Accept AESER=N as entered - rejected: contradicts protocol section 6"
+        ]
+      },
+      "timestamp": "2026-09-19T07:10:16.172517"
+    },
+    "DOSING_ERROR|S09": {
+      "cycle": 1,
+      "escalation": {
+        "code": "DOSING_ERROR",
+        "site": "S09",
+        "severity": "HIGH",
+        "summary": "Site S09 has systematic dosing deviations across multiple subjects (18 records).",
+        "evidence": [
+          {
+            "domain": "EX",
+            "site": "S09",
+            "count": 18
+          }
+        ],
+        "alternatives": [
+          "Issue corrective action and retrain site dispensing staff",
+          "Accept site error rate without intervention - rejected: systemic GCP non-compliance"
+        ]
+      },
+      "timestamp": "2026-09-19T07:10:16.172517"
+    }
+  },
+  "rejected_escalations": {},
+  "subject_flag_cuts": {
+    "042-S07-001": [
+      6
+    ]
+  },
+  "site_problem_counts": {},
+  "site_flags": {},
+  "cycle_history": [
+    {
+      "cycle": 1,
+      "cut": 6,
+      "protocol_version": 2,
+      "findings_total": 56,
+      "escalations_total": 6,
+      "queries_total": 29,
+      "deviations_total": 170,
+      "human_decisions_total": 6
+    },
+    {
+      "cycle": 2,
+      "cut": 6,
+      "protocol_version": 2,
+      "findings_total": 56,
+      "escalations_total": 0,
+      "queries_total": 0,
+      "deviations_total": 170,
+      "human_decisions_total": 0
+    },
+    {
+      "cycle": 3,
+      "cut": 6,
+      "protocol_version": 1,
+      "findings_total": 56,
+      "escalations_total": 0,
+      "queries_total": 0,
+      "deviations_total": 72,
+      "human_decisions_total": 0
+    }
+  ]
+}

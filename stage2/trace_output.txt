@@ -1,0 +1,12 @@
+[2026-09-19T07:10:16.171410] detect          -> 56 findings under protocol v2 - safety 6, data 49, site 1
+[2026-09-19T07:10:16.171410] medical_review  -> 6 escalation drafts; 1 liver candidate kept monitor-only (screening ALT already elevated)
+[2026-09-19T07:10:16.171410] data_manager    -> 29 queries raised (26 confirmed by site, 3 unanswered - site on hold); 0 duplicates
+[2026-09-19T07:10:16.172517] compliance      -> 170 deviations under v2: 136 visit windows, 7 prohibited medicines, 5 eligibility, 4 renal exclusion
+[2026-09-19T07:10:16.172517] human_gate      -> 6 escalations await the medical monitor
+[2026-09-19T07:10:16.172517] human_gate      -> HYS_LAW_CANDIDATE 042-S05-003 -> APPROVED: Consistent with Hy's law; report to safety and hold dosing pending review.
+[2026-09-19T07:10:16.172517] human_gate      -> SAE_MISCODED 042-S02-004 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.
+[2026-09-19T07:10:16.172517] human_gate      -> SAE_UNESCALATED 042-S12-005 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.
+[2026-09-19T07:10:16.172517] human_gate      -> SAE_UNESCALATED 042-S05-006 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.
+[2026-09-19T07:10:16.172517] human_gate      -> SAE_UNESCALATED 042-S01-007 -> APPROVED: Serious adverse event confirmed; expedited report within 24 h.
+[2026-09-19T07:10:16.172517] human_gate      -> DOSING_ERROR S09 -> APPROVED: Site-level deviation; issue corrective action and retrain site staff.
+[2026-09-19T07:10:16.172517] execute         -> cycle complete: 56 findings, 6 escalations, 29 queries, 170 deviations
