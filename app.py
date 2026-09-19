@@ -198,6 +198,56 @@ def build_why_evidence(ans: Answer, graph: StudyGraph, question_text: str) -> di
                         })
                         break
 
+            elif dom == "VS":
+                for v in pdata.get("vital_signs", []):
+                    if v["seq"] == seq:
+                        tcd = v.get("testcd", "Vital Sign")
+                        val = v.get("raw_value", "-")
+                        unit = v.get("unit") or v.get("raw", {}).get("VSORRESU", "")
+                        vis = v.get("visit", "")
+                        dt = v.get("date_str") or str(v.get("date", "-"))
+                        subj_items.append({
+                            "title": f"Vital Sign: {tcd}",
+                            "value": f"{val} {unit}".strip(),
+                            "normalized": f"Visit: {vis}" if vis else None,
+                            "uln": None,
+                            "date": dt,
+                            "record_ref": f"RecordRef(domain='VS', usubjid='{subj}', seq={seq})"
+                        })
+                        break
+
+            elif dom == "EG":
+                for eg in pdata.get("ecg", []):
+                    if eg["seq"] == seq:
+                        tcd = eg.get("testcd", "ECG")
+                        val = eg.get("raw_value", "-")
+                        unit = eg.get("unit") or eg.get("raw", {}).get("EGORRESU", "")
+                        vis = eg.get("visit", "")
+                        dt = eg.get("date_str") or str(eg.get("date", "-"))
+                        subj_items.append({
+                            "title": f"ECG: {tcd}",
+                            "value": f"{val} {unit}".strip(),
+                            "normalized": f"Visit: {vis}" if vis else None,
+                            "uln": None,
+                            "date": dt,
+                            "record_ref": f"RecordRef(domain='EG', usubjid='{subj}', seq={seq})"
+                        })
+                        break
+
+            elif dom == "MH":
+                for m in pdata.get("medical_history", []):
+                    if m["seq"] == seq:
+                        term = m.get("term", "Medical History")
+                        subj_items.append({
+                            "title": f"Medical History: {term}",
+                            "value": term,
+                            "normalized": None,
+                            "uln": None,
+                            "date": "-",
+                            "record_ref": f"RecordRef(domain='MH', usubjid='{subj}', seq={seq})"
+                        })
+                        break
+
         groups.append({
             "subject": subj,
             "items": subj_items,

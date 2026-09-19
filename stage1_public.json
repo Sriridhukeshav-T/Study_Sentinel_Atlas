@@ -290,10 +290,10 @@
   {
     "question_id": "Q009",
     "answer": [],
-    "text": "No matching records or findings found for this query in the study graph.",
+    "text": "0 subjects experienced 'Pancreatitis' adverse events at site S10.",
     "evidence": [],
-    "confidence": 0.85,
-    "steps_used": 2,
+    "confidence": 0.95,
+    "steps_used": 0,
     "tokens_used": 0
   },
   {

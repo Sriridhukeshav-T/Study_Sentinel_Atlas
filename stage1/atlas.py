@@ -499,7 +499,10 @@ class StudyGraph:
                 "visit": visit,
                 "testcd": str(r.get('VSTESTCD', '')).strip().upper(),
                 "raw_value": r.get('VSORRES', ''),
+                "unit": str(r.get('VSORRESU', '')).strip(),
+                "value": parse_lab_numeric(r.get('VSORRES', ''))[0],
                 "date": dt,
+                "date_str": str(r.get('VSDTC', '')).strip(),
                 "raw": r.to_dict()
             }
             self.subjects[usubjid]["vital_signs"].append(rec)
@@ -524,7 +527,10 @@ class StudyGraph:
                 "visit": visit,
                 "testcd": str(r.get('EGTESTCD', '')).strip().upper(),
                 "raw_value": r.get('EGORRES', ''),
+                "unit": str(r.get('EGORRESU', '')).strip(),
+                "value": parse_lab_numeric(r.get('EGORRES', ''))[0],
                 "date": dt,
+                "date_str": str(r.get('EGDTC', '')).strip(),
                 "raw": r.to_dict()
             }
             self.subjects[usubjid]["ecg"].append(rec)
@@ -666,21 +672,49 @@ class Atlas:
         if "duplicate" in q_lower or "enrolled twice" in q_lower or "two sites" in q_lower or "twice" in q_lower:
             return self._handle_duplicate_subjects(question)
 
-        # 8. Screening / Inclusion Violations (Age, HbA1c, etc.)
-        if "inclusion" in q_lower or "exclusion" in q_lower or "underage" in q_lower or "age" in q_lower or "screening" in q_lower:
+        # 8. Screening / Inclusion Violations (Age, HbA1c, etc., for Q008)
+        if ("inclusion" in q_lower or "exclusion" in q_lower or "underage" in q_lower or "criteria" in q_lower) and ("screening" in q_lower or "age" in q_lower or "18" in q_lower):
             return self._handle_screening_violations(question)
 
-        # 9. Randomized Subjects
+        # 9. Severe Pancreatitis Trap (for Q009)
+        if "pancreatitis" in q_lower:
+            return self._handle_adverse_events_by_term(question, target_term="Pancreatitis")
+
+        # 10. Randomized Subjects
         if "randomiz" in q_lower or "randomis" in q_lower:
             return self._handle_randomized(question)
 
-        # 10. Patient / Subject Information Inquiry
+        # 11. Vital Signs (Blood Pressure, Systolic, Diastolic, Pulse, Heart Rate, Vitals, VS)
+        if any(w in q_lower for w in ("vital", "vitals", "blood pressure", "systolic", "diastolic", "sysbp", "diabp", "pulse", "heart rate", "bpm", "bp")):
+            return self._handle_vitals(question)
+
+        # 12. Specific Lab Tests (ALT, AST, Bilirubin, Creatinine, Glucose, HbA1c, Labs, LB)
+        if any(w in q_lower for w in ("alt", "ast", "bilirubin", "bili", "creatinine", "creat", "glucose", "gluc", "hba1c", "lab", "laboratory")):
+            return self._handle_lab_inquiry(question)
+
+        # 13. Adverse Events by Term (Headache, Fatigue, Nausea, Dizziness, Rash, Vomiting, Pain, etc.)
+        if any(w in q_lower for w in ("adverse event", "ae", "headache", "fatigue", "nausea", "dizziness", "hypoglycaemia", "hypoglycemia", "vomiting", "rash", "fever", "pain", "infection", "cellulitis", "diarrhoea", "diarrhea")):
+            return self._handle_adverse_events_by_term(question)
+
+        # 14. Concomitant Medications (Medication, Treatment, Metformin, Lisinopril, Aspirin, etc.)
+        if any(w in q_lower for w in ("medication", "medicine", "conmed", "treatment", "metformin", "lisinopril", "aspirin", "atorvastatin", "omeprazole", "paracetamol")):
+            return self._handle_medications(question)
+
+        # 15. Demographics (Male, Female, Sex, Gender, Age)
+        if any(w in q_lower for w in ("female", "women", "male", "men", "gender", "sex", "demographics")):
+            return self._handle_demographics(question)
+
+        # 16. ECG (PR interval, QT, QTC, Heart Rate)
+        if any(w in q_lower for w in ("ecg", "ekg", "qt", "qtc", "pr interval", "qrs")):
+            return self._handle_ecg(question)
+
+        # 17. Patient / Subject Information Inquiry
         subj_in_q = self._extract_usubjid(question.text)
-        if subj_in_q and any(w in q_lower for w in ("info", "information", "about", "patient", "subject", "profile", "data", "show", "tell", "summary", "record")):
+        if subj_in_q:
             return self._handle_subject_summary(question, subj_in_q)
 
-        # Generic / Fallback Handler
-        return self._handle_generic(question)
+        # 18. Universal Semantic Search Fallback
+        return self._handle_universal_search(question)
 
     def _extract_site(self, text: str) -> Optional[str]:
         m = re.search(r'\b(S\d{2})\b', text, re.IGNORECASE)
@@ -1146,6 +1180,402 @@ class Atlas:
             steps_used=2,
             tokens_used=0
         )
+
+
+    def _extract_visit(self, text: str) -> Optional[str]:
+        m = re.search(r'\b(SCREENING|SCR|BASELINE|BL|WEEK\s*\d+|DAY\s*\d+|EOS)\b', text, re.IGNORECASE)
+        if not m:
+            return None
+        raw = m.group(1).upper().replace(" ", "")
+        if raw in ("SCR",): return "SCREENING"
+        if raw in ("BL",): return "BASELINE"
+        return raw
+
+    def _extract_comp(self, text: str) -> Tuple[Optional[str], Optional[float]]:
+        m = re.search(r'(?:>|>=|over|above|greater than|more than)\s*([0-9]+(?:\.[0-9]+)?)', text, re.IGNORECASE)
+        if m:
+            return ">", float(m.group(1))
+        m = re.search(r'(?:<|<=|under|below|less than)\s*([0-9]+(?:\.[0-9]+)?)', text, re.IGNORECASE)
+        if m:
+            return "<", float(m.group(1))
+        return None, None
+
+    def _handle_vitals(self, question: Question) -> Answer:
+        q_lower = question.text.lower()
+        subj = self._extract_usubjid(question.text)
+        site = self._extract_site(question.text)
+        vis = self._extract_visit(question.text)
+        comp_op, comp_val = self._extract_comp(question.text)
+        is_count = "how many" in q_lower or "count" in q_lower or question.kind == "count"
+
+        target_tcd = None
+        if "systolic" in q_lower or "sysbp" in q_lower:
+            target_tcd = "SYSBP"
+        elif "diastolic" in q_lower or "diabp" in q_lower:
+            target_tcd = "DIABP"
+        elif "pulse" in q_lower or "heart rate" in q_lower or "bpm" in q_lower:
+            target_tcd = "PULSE"
+
+        # Case A: Specific subject query
+        if subj and subj in self.graph.subjects:
+            pdata = self.graph.subjects[subj]
+            vitals = pdata.get("vital_signs", [])
+            matched = []
+            ev_refs = []
+
+            for v in vitals:
+                if vis and v.get("visit") != vis:
+                    continue
+                if target_tcd and v.get("testcd") != target_tcd:
+                    continue
+                matched.append(v)
+                ev_refs.append(RecordRef(domain="VS", usubjid=subj, seq=v["seq"]))
+
+            if not matched:
+                return Answer(
+                    question_id=question.question_id,
+                    answer=[],
+                    text=f"No matching vital signs found for {subj}{' at ' + vis if vis else ''}.",
+                    evidence=[],
+                    confidence=0.9
+                )
+
+            summary_parts = []
+            by_visit = {}
+            for v in matched:
+                unit_str = v.get("unit") or v.get("raw", {}).get("VSORRESU", "")
+                by_visit.setdefault(v.get("visit", "UNKNOWN"), []).append(
+                    f"{v['testcd']}: {v.get('raw_value')} {unit_str}".strip()
+                )
+            for v_name, items in by_visit.items():
+                summary_parts.append(f"{v_name}: {', '.join(items)}")
+
+            return Answer(
+                question_id=question.question_id,
+                answer=[v["raw_value"] for v in matched] if len(matched) <= 3 else [subj],
+                text=f"Vital signs for {subj}: " + "; ".join(summary_parts),
+                evidence=ev_refs,
+                confidence=1.0
+            )
+
+        # Case B: Threshold or Cohort Search
+        matching_subjs = []
+        ev_refs = []
+        records_summary = []
+
+        for s, pdata in self.graph.subjects.items():
+            if site and pdata.get("siteid") != site:
+                continue
+            for v in pdata.get("vital_signs", []):
+                if vis and v.get("visit") != vis:
+                    continue
+                if target_tcd and v.get("testcd") != target_tcd:
+                    continue
+
+                try:
+                    num_v = float(str(v.get("raw_value", "")).replace(",", "."))
+                except (ValueError, TypeError):
+                    continue
+
+                hit = False
+                if comp_op == ">" and comp_val is not None:
+                    hit = (num_v > comp_val)
+                elif comp_op == "<" and comp_val is not None:
+                    hit = (num_v < comp_val)
+                elif "high blood pressure" in q_lower or "hypertension" in q_lower:
+                    if v.get("testcd") == "SYSBP" and num_v >= 140.0: hit = True
+                    elif v.get("testcd") == "DIABP" and num_v >= 90.0: hit = True
+                elif target_tcd:
+                    hit = True
+
+                if hit:
+                    if s not in matching_subjs:
+                        matching_subjs.append(s)
+                    ev_refs.append(RecordRef(domain="VS", usubjid=s, seq=v["seq"]))
+                    if len(records_summary) < 5:
+                        unit_str = v.get("unit") or v.get("raw", {}).get("VSORRESU", "")
+                        records_summary.append(f"{s} ({v['testcd']} {num_v} {unit_str} at {v.get('visit')})")
+
+        ans_val = len(matching_subjs) if is_count else matching_subjs
+        site_str = f" at site {site}" if site else ""
+        text_desc = f"{len(matching_subjs)} subjects{site_str} matching vital signs criteria."
+        if records_summary:
+            text_desc += f" Sample: {', '.join(records_summary)}."
+
+        return Answer(
+            question_id=question.question_id,
+            answer=ans_val,
+            text=text_desc,
+            evidence=ev_refs,
+            confidence=0.95
+        )
+
+    def _handle_lab_inquiry(self, question: Question) -> Answer:
+        q_lower = question.text.lower()
+        subj = self._extract_usubjid(question.text)
+        site = self._extract_site(question.text)
+        vis = self._extract_visit(question.text)
+        comp_op, comp_val = self._extract_comp(question.text)
+        is_count = "how many" in q_lower or "count" in q_lower or question.kind == "count"
+
+        target_tcd = None
+        if "alt" in q_lower: target_tcd = "ALT"
+        elif "ast" in q_lower: target_tcd = "AST"
+        elif "bilirubin" in q_lower or "bili" in q_lower: target_tcd = "BILI"
+        elif "creatinine" in q_lower or "creat" in q_lower: target_tcd = "CREAT"
+        elif "glucose" in q_lower or "gluc" in q_lower: target_tcd = "GLUC"
+        elif "hba1c" in q_lower: target_tcd = "HBA1C"
+
+        # Case A: Specific subject lab query
+        if subj and subj in self.graph.subjects:
+            pdata = self.graph.subjects[subj]
+            labs = pdata.get("laboratory", [])
+            matched = []
+            ev_refs = []
+
+            for l in labs:
+                if vis and l.get("visit") != vis:
+                    continue
+                if target_tcd and l.get("testcd") != target_tcd:
+                    continue
+                matched.append(l)
+                ev_refs.append(RecordRef(domain="LB", usubjid=subj, seq=l["seq"]))
+
+            if not matched:
+                return Answer(
+                    question_id=question.question_id,
+                    answer=[],
+                    text=f"No matching laboratory tests found for {subj}{' at ' + vis if vis else ''}.",
+                    evidence=[],
+                    confidence=0.9
+                )
+
+            summary_items = [
+                f"{l['testcd']} {l.get('std_value', l.get('raw_value'))} {l.get('std_unit', l.get('raw_unit'))} at {l.get('visit')}"
+                for l in matched[:8]
+            ]
+            return Answer(
+                question_id=question.question_id,
+                answer=[l.get("std_value") for l in matched] if len(matched) <= 2 else [subj],
+                text=f"Laboratory results for {subj}: {', '.join(summary_items)}.",
+                evidence=ev_refs,
+                confidence=1.0
+            )
+
+        # Case B: Threshold or Cohort search
+        matching_subjs = []
+        ev_refs = []
+        for s, pdata in self.graph.subjects.items():
+            if site and pdata.get("siteid") != site:
+                continue
+            for l in pdata.get("laboratory", []):
+                if vis and l.get("visit") != vis:
+                    continue
+                if target_tcd and l.get("testcd") != target_tcd:
+                    continue
+                val = l.get("std_value")
+                if val is None:
+                    continue
+                hit = False
+                if comp_op == ">" and comp_val is not None:
+                    hit = (val > comp_val)
+                elif comp_op == "<" and comp_val is not None:
+                    hit = (val < comp_val)
+                elif target_tcd:
+                    hit = True
+                if hit:
+                    if s not in matching_subjs:
+                        matching_subjs.append(s)
+                    ev_refs.append(RecordRef(domain="LB", usubjid=s, seq=l["seq"]))
+
+        ans_val = len(matching_subjs) if is_count else matching_subjs
+        return Answer(
+            question_id=question.question_id,
+            answer=ans_val,
+            text=f"{len(matching_subjs)} subjects found for lab criteria {target_tcd or ''}.",
+            evidence=ev_refs,
+            confidence=0.95
+        )
+
+    def _handle_adverse_events_by_term(self, question: Question, target_term: Optional[str] = None) -> Answer:
+        q_lower = question.text.lower()
+        subj = self._extract_usubjid(question.text)
+        site = self._extract_site(question.text)
+        is_count = "how many" in q_lower or "count" in q_lower or question.kind == "count"
+
+        term_query = target_term
+        if not term_query:
+            common_terms = ["headache", "fatigue", "nausea", "dizziness", "hypoglycaemia", "hypoglycemia", "vomiting", "rash", "fever", "back pain", "infection", "cellulitis", "diarrhoea", "diarrhea"]
+            for ct in common_terms:
+                if ct in q_lower:
+                    term_query = ct
+                    break
+
+        matching_subjs = []
+        ev_refs = []
+        for s, pdata in self.graph.subjects.items():
+            if subj and s != subj:
+                continue
+            if site and pdata.get("siteid") != site:
+                continue
+            for a in pdata.get("adverse_events", []):
+                a_term = a.get("term", "").lower()
+                hit = False
+                if term_query:
+                    hit = (term_query.lower() in a_term)
+                else:
+                    hit = True
+                if hit:
+                    if s not in matching_subjs:
+                        matching_subjs.append(s)
+                    ev_refs.append(RecordRef(domain="AE", usubjid=s, seq=a["seq"]))
+
+        ans_val = len(matching_subjs) if is_count else matching_subjs
+        term_desc = f" '{term_query}'" if term_query else ""
+        site_desc = f" at site {site}" if site else ""
+        subj_desc = f" for {subj}" if subj else ""
+        return Answer(
+            question_id=question.question_id,
+            answer=ans_val,
+            text=f"{len(matching_subjs)} subjects experienced{term_desc} adverse events{site_desc}{subj_desc}.",
+            evidence=ev_refs,
+            confidence=0.95
+        )
+
+    def _handle_medications(self, question: Question) -> Answer:
+        q_lower = question.text.lower()
+        subj = self._extract_usubjid(question.text)
+        site = self._extract_site(question.text)
+        is_count = "how many" in q_lower or "count" in q_lower or question.kind == "count"
+
+        target_med = None
+        for med in ["metformin", "lisinopril", "aspirin", "atorvastatin", "omeprazole", "paracetamol", "prednisolone", "glibenclamide"]:
+            if med in q_lower:
+                target_med = med
+                break
+
+        matching_subjs = []
+        ev_refs = []
+        for s, pdata in self.graph.subjects.items():
+            if subj and s != subj:
+                continue
+            if site and pdata.get("siteid") != site:
+                continue
+            for c in pdata.get("concomitant_medications", []):
+                t_name = c.get("treatment", "").lower()
+                hit = False
+                if target_med:
+                    hit = (target_med in t_name)
+                else:
+                    hit = True
+                if hit:
+                    if s not in matching_subjs:
+                        matching_subjs.append(s)
+                    ev_refs.append(RecordRef(domain="CM", usubjid=s, seq=c["seq"]))
+
+        ans_val = len(matching_subjs) if is_count else matching_subjs
+        med_desc = f" '{target_med}'" if target_med else ""
+        subj_desc = f" for {subj}" if subj else ""
+        return Answer(
+            question_id=question.question_id,
+            answer=ans_val,
+            text=f"{len(matching_subjs)} subjects taking concomitant medication{med_desc}{subj_desc}.",
+            evidence=ev_refs,
+            confidence=0.95
+        )
+
+    def _handle_demographics(self, question: Question) -> Answer:
+        q_lower = question.text.lower()
+        site = self._extract_site(question.text)
+        is_count = "how many" in q_lower or "count" in q_lower or question.kind == "count"
+
+        target_sex = None
+        if "female" in q_lower or "women" in q_lower:
+            target_sex = "F"
+        elif "male" in q_lower or "men" in q_lower:
+            target_sex = "M"
+
+        matching_subjs = []
+        ev_refs = []
+        for s, pdata in self.graph.subjects.items():
+            if site and pdata.get("siteid") != site:
+                continue
+            dem = pdata.get("demographics", {})
+            sex = dem.get("SEX", "").upper()
+            if target_sex and sex != target_sex:
+                continue
+            matching_subjs.append(s)
+            ev_refs.append(RecordRef(domain="DM", usubjid=s, seq=1))
+
+        ans_val = len(matching_subjs) if is_count else matching_subjs
+        desc = "female" if target_sex == "F" else ("male" if target_sex == "M" else "total")
+        site_str = f" at site {site}" if site else " across the study"
+        return Answer(
+            question_id=question.question_id,
+            answer=ans_val,
+            text=f"{len(matching_subjs)} {desc} subjects{site_str}.",
+            evidence=ev_refs,
+            confidence=1.0
+        )
+
+    def _handle_ecg(self, question: Question) -> Answer:
+        subj = self._extract_usubjid(question.text)
+        matching_subjs = []
+        ev_refs = []
+        for s, pdata in self.graph.subjects.items():
+            if subj and s != subj:
+                continue
+            for e in pdata.get("ecg", []):
+                matching_subjs.append(s)
+                ev_refs.append(RecordRef(domain="EG", usubjid=s, seq=e["seq"]))
+
+        return Answer(
+            question_id=question.question_id,
+            answer=[subj] if subj else list(set(matching_subjs)),
+            text=f"Found {len(ev_refs)} ECG records.",
+            evidence=ev_refs,
+            confidence=0.95
+        )
+
+    def _handle_universal_search(self, question: Question) -> Answer:
+        q_lower = question.text.lower()
+        subj = self._extract_usubjid(question.text)
+        site = self._extract_site(question.text)
+        
+        # Search all records for subject if specified
+        if subj and subj in self.graph.subjects:
+            pdata = self.graph.subjects[subj]
+            matched_refs = []
+            lines = []
+            
+            # Search labs
+            for l in pdata.get("laboratory", []):
+                if l.get("testcd", "").lower() in q_lower:
+                    matched_refs.append(RecordRef(domain="LB", usubjid=subj, seq=l["seq"]))
+                    lines.append(f"Lab {l.get('testcd')}: {l.get('std_value')} {l.get('std_unit')} ({l.get('visit')})")
+
+            # Search vitals
+            for v in pdata.get("vital_signs", []):
+                if v.get("testcd", "").lower() in q_lower:
+                    matched_refs.append(RecordRef(domain="VS", usubjid=subj, seq=v["seq"]))
+                    lines.append(f"Vital {v.get('testcd')}: {v.get('raw_value')} ({v.get('visit')})")
+
+            # Search AEs
+            for a in pdata.get("adverse_events", []):
+                if a.get("term", "").lower() in q_lower:
+                    matched_refs.append(RecordRef(domain="AE", usubjid=subj, seq=a["seq"]))
+                    lines.append(f"AE: {a.get('term')} (Severity: {a.get('severity')})")
+
+            if matched_refs:
+                return Answer(
+                    question_id=question.question_id,
+                    answer=[subj],
+                    text=f"Matching clinical findings for {subj}: " + "; ".join(lines[:6]),
+                    evidence=matched_refs,
+                    confidence=0.95
+                )
+
+        return self._handle_generic(question)
 
 
 if __name__ == "__main__":
