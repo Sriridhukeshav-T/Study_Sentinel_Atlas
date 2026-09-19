@@ -1,5 +1,5 @@
 {
-  "cycle_count": 5,
+  "cycle_count": 7,
   "last_cut": 6,
   "raised_queries": {
     "AE|042-S11-005|1": {
@@ -603,6 +603,26 @@
     },
     {
       "cycle": 5,
+      "cut": 6,
+      "protocol_version": 2,
+      "findings_total": 56,
+      "escalations_total": 0,
+      "queries_total": 0,
+      "deviations_total": 170,
+      "human_decisions_total": 0
+    },
+    {
+      "cycle": 6,
+      "cut": 6,
+      "protocol_version": 2,
+      "findings_total": 56,
+      "escalations_total": 0,
+      "queries_total": 0,
+      "deviations_total": 170,
+      "human_decisions_total": 0
+    },
+    {
+      "cycle": 7,
       "cut": 6,
       "protocol_version": 2,
       "findings_total": 56,
